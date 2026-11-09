@@ -12,9 +12,9 @@ export component LyricsPanel inherits Rectangle {
     in property <int> active-index: -1;
 
     width: 300px;
-    background: #121218;
+    background: #130f22;
     border-width: 1px;
-    border-color: #22222e;
+    border-color: #22193b;
 
     VerticalLayout {
         padding: 16px;
@@ -30,7 +30,7 @@ export component LyricsPanel inherits Rectangle {
             }
             Text {
                 text: "LRCLIB";
-                color: #ff335c;
+                color: #c084fc;
                 font-size: 10px;
                 font-weight: 700;
                 vertical-alignment: center;
@@ -47,7 +47,7 @@ export component LyricsPanel inherits Rectangle {
                     height: 180px;
                     Text {
                         text: root.status-text;
-                        color: #848494;
+                        color: #9086a8;
                         font-size: 12px;
                         wrap: word-wrap;
                         horizontal-alignment: center;
@@ -58,9 +58,9 @@ export component LyricsPanel inherits Rectangle {
                 for line[idx] in root.lines : Rectangle {
                     min-height: 36px;
                     border-radius: 6px;
-                    background: line.active ? #281622 : transparent;
+                    background: line.active ? #2f184e : transparent;
                     border-width: line.active ? 1px : 0px;
-                    border-color: #ff003377;
+                    border-color: #a855f777;
 
                     HorizontalLayout {
                         padding: 8px;
@@ -69,7 +69,7 @@ export component LyricsPanel inherits Rectangle {
                         Text {
                             width: 38px;
                             text: line.time-label;
-                            color: line.active ? #ff4d70 : #646474;
+                            color: line.active ? #c084fc : #7d739c;
                             font-size: 11px;
                             font-weight: line.active ? 700 : 400;
                             vertical-alignment: center;
@@ -78,7 +78,7 @@ export component LyricsPanel inherits Rectangle {
                         Text {
                             horizontal-stretch: 1;
                             text: line.text;
-                            color: line.active ? #ffffff : #8e8e9e;
+                            color: line.active ? #ffffff : #988eb5;
                             font-size: line.active ? 14px : 12px;
                             font-weight: line.active ? 700 : 400;
                             wrap: word-wrap;

@@ -12,9 +12,9 @@ export component EqPopover inherits Rectangle {
     width: 310px;
     height: 350px;
     border-radius: 12px;
-    background: #171721;
+    background: #181329;
     border-width: 1px;
-    border-color: #343448;
+    border-color: #2e254d;
 
     VerticalLayout {
         padding: 16px;
@@ -32,7 +32,7 @@ export component EqPopover inherits Rectangle {
                 width: 24px;
                 height: 24px;
                 border-radius: 12px;
-                background: close-ta.has-hover ? #2e2e3e : transparent;
+                background: close-ta.has-hover ? #2b2246 : transparent;
                 Text {
                     text: "✕";
                     color: #a0a0b0;
@@ -50,7 +50,7 @@ export component EqPopover inherits Rectangle {
 
         Text {
             text: "SUPEREQUALIZER PRESETS";
-            color: #7c7c8e;
+            color: #8e85aa;
             font-size: 10px;
             font-weight: 700;
         }
@@ -58,7 +58,7 @@ export component EqPopover inherits Rectangle {
         for preset-name in ["Flat", "Bass Boost", "Treble Boost", "V-Shape", "Vocal"] : Rectangle {
             height: 32px;
             border-radius: 6px;
-            background: root.active-preset == preset-name ? #ff0033 : (p-ta.has-hover ? #252534 : #1e1e2a);
+            background: root.active-preset == preset-name ? #9333ea : (p-ta.has-hover ? #261f3e : #1e1732);
             HorizontalLayout {
                 padding-left: 12px;
                 padding-right: 12px;
@@ -89,9 +89,9 @@ export component EqPopover inherits Rectangle {
         Rectangle {
             height: 36px;
             border-radius: 6px;
-            background: root.normalization-enabled ? #1c3128 : #1e1e2a;
+            background: root.normalization-enabled ? #1a3025 : #1e1732;
             border-width: 1px;
-            border-color: root.normalization-enabled ? #22c55e88 : #2b2b3a;
+            border-color: root.normalization-enabled ? #22c55e88 : #2e254d;
 
             HorizontalLayout {
                 padding-left: 12px;
@@ -123,9 +123,9 @@ export component EqPopover inherits Rectangle {
         Rectangle {
             height: 34px;
             border-radius: 6px;
-            background: root.sponsorblock-enabled ? #261b2e : #1e1e2a;
+            background: root.sponsorblock-enabled ? #30184b : #1e1732;
             border-width: 1px;
-            border-color: root.sponsorblock-enabled ? #a855f788 : #2b2b3a;
+            border-color: root.sponsorblock-enabled ? #c084fc88 : #2e254d;
 
             HorizontalLayout {
                 padding-left: 12px;

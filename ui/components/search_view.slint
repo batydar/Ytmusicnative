@@ -11,7 +11,7 @@ export component SearchView inherits Rectangle {
     callback play-track(string);
     callback download-track(string);
 
-    background: #0d0d11;
+    background: #0e0b18;
 
     VerticalLayout {
         padding: 20px;
@@ -41,7 +41,7 @@ export component SearchView inherits Rectangle {
             Rectangle {
                 width: 110px;
                 border-radius: 6px;
-                background: search-btn-ta.has-hover ? #ff1a47 : #ff0033;
+                background: search-btn-ta.has-hover ? #9333ea : #7c3aed;
                 Text {
                     text: root.is-searching ? "Searching..." : "Search";
                     color: #ffffff;
@@ -68,10 +68,10 @@ export component SearchView inherits Rectangle {
                 if root.search-results.length == 0 : Rectangle {
                     height: 160px;
                     border-radius: 10px;
-                    background: #14141b;
+                    background: #161126;
                     Text {
                         text: root.is-searching ? "Querying InnerTube search endpoint..." : "Enter a song or artist above to search YouTube Music.";
-                        color: #8c8c9c;
+                        color: #988fae;
                         font-size: 13px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -81,9 +81,9 @@ export component SearchView inherits Rectangle {
                 for track in root.search-results : Rectangle {
                     height: 58px;
                     border-radius: 8px;
-                    background: track.video-id == root.current-video-id ? #261720 : (play-ta.has-hover ? #181822 : #13131a);
+                    background: track.video-id == root.current-video-id ? #2e1a47 : (play-ta.has-hover ? #1e1733 : #151024);
                     border-width: 1px;
-                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1f1f2a;
+                    border-color: track.video-id == root.current-video-id ? #a855f788 : #201a35;
 
                     play-ta := TouchArea {
                         clicked => {
@@ -101,7 +101,7 @@ export component SearchView inherits Rectangle {
                             height: 34px;
                             y: 11px;
                             border-radius: 17px;
-                            background: track.video-id == root.current-video-id ? #ff0033 : (play-ta.has-hover ? #ff0033 : #1e1e28);
+                            background: track.video-id == root.current-video-id ? #a855f7 : (play-ta.has-hover ? #9333ea : #241c3b);
                             Text {
                                 text: "▶";
                                 color: #ffffff;
@@ -124,7 +124,7 @@ export component SearchView inherits Rectangle {
                             }
                             Text {
                                 text: track.artist;
-                                color: #9696a6;
+                                color: #a299bf;
                                 font-size: 12px;
                                 overflow: elide;
                             }
@@ -151,7 +151,7 @@ export component SearchView inherits Rectangle {
                         Text {
                             width: 48px;
                             text: track.duration;
-                            color: #8c8c9c;
+                            color: #9086ac;
                             font-size: 12px;
                             horizontal-alignment: right;
                             vertical-alignment: center;
@@ -162,7 +162,7 @@ export component SearchView inherits Rectangle {
                             height: 30px;
                             y: 14px;
                             border-radius: 6px;
-                            background: track.is-cached ? #1e2822 : (dl-ta.has-hover ? #ff0033 : #252532);
+                            background: track.is-cached ? #17261d : (dl-ta.has-hover ? #9333ea : #241c3d);
                             Text {
                                 text: track.is-cached ? "✓ Cached" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "↓ Opus");
                                 color: #ffffff;

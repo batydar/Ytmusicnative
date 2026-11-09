@@ -24,7 +24,7 @@ export component PlaylistsView inherits Rectangle {
     callback refresh-playlists();
     callback open-login();
 
-    background: #0b0b0f;
+    background: #0e0b18;
 
     VerticalLayout {
         padding: 22px;
@@ -43,7 +43,7 @@ export component PlaylistsView inherits Rectangle {
                 }
                 Text {
                     text: root.active-browse-id != "" ? "Anında dinlemek veya Opus önbelleğine indirmek için bir şarkı seçin" : (root.is-logged-in ? ("Kitaplığınızda " + root.playlists.length + " çalma listesi ve karışım bulundu") : "Kendi kaydettiğiniz ve oluşturduğunuz listeler için giriş yapın");
-                    color: #7e7e92;
+                    color: #948ba9;
                     font-size: 12px;
                 }
             }
@@ -55,9 +55,9 @@ export component PlaylistsView inherits Rectangle {
                     width: 124px;
                     height: 34px;
                     border-radius: 8px;
-                    background: ref-pl-ta.has-hover ? #2e2e40 : #1c1c28;
+                    background: ref-pl-ta.has-hover ? #292045 : #1a142c;
                     border-width: 1px;
-                    border-color: #313144;
+                    border-color: #302552;
                     Text {
                         text: root.is-loading ? "Yükleniyor..." : "Listeleri Yenile";
                         color: #ffffff;
@@ -77,9 +77,9 @@ export component PlaylistsView inherits Rectangle {
                     width: 120px;
                     height: 34px;
                     border-radius: 8px;
-                    background: back-ta.has-hover ? #2e2e40 : #1c1c28;
+                    background: back-ta.has-hover ? #292045 : #1a142c;
                     border-width: 1px;
-                    border-color: #313144;
+                    border-color: #302552;
                     Text {
                         text: "← Listelere Dön";
                         color: #ffffff;
@@ -100,16 +100,16 @@ export component PlaylistsView inherits Rectangle {
         if !root.is-logged-in && root.active-browse-id == "" : Rectangle {
             height: 46px;
             border-radius: 10px;
-            background: #22131c;
+            background: #23143d;
             border-width: 1px;
-            border-color: #ff003355;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 16px;
                 padding-right: 16px;
                 alignment: space-between;
                 Text {
                     text: "Oluşturduğunuz ve kaydettiğiniz tüm çalma listelerini görmek için hesabınıza giriş yapın.";
-                    color: #f0d0d8;
+                    color: #eeddfc;
                     font-size: 12px;
                     font-weight: 500;
                     vertical-alignment: center;
@@ -119,7 +119,7 @@ export component PlaylistsView inherits Rectangle {
                     height: 30px;
                     y: 8px;
                     border-radius: 6px;
-                    background: pl-login-ta.has-hover ? #ff1f4b : #ff0033;
+                    background: pl-login-ta.has-hover ? #9333ea : #7c3aed;
                     Text {
                         text: "Google / QR ile Giriş Yap";
                         color: #ffffff;
@@ -147,10 +147,10 @@ export component PlaylistsView inherits Rectangle {
                 if root.playlists.length == 0 : Rectangle {
                     height: 180px;
                     border-radius: 12px;
-                    background: #13131b;
+                    background: #161126;
                     Text {
                         text: root.is-loading ? "Loading playlists..." : "No playlists loaded. Click Refresh above or login with cookies.";
-                        color: #8c8c9e;
+                        color: #988fae;
                         font-size: 13px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -160,9 +160,9 @@ export component PlaylistsView inherits Rectangle {
                 for pl in root.playlists : Rectangle {
                     height: 64px;
                     border-radius: 10px;
-                    background: pl-ta.has-hover ? #1c1c28 : #13131c;
+                    background: pl-ta.has-hover ? #1f1836 : #151024;
                     border-width: 1px;
-                    border-color: pl-ta.has-hover ? #ff003366 : #1e1e2c;
+                    border-color: pl-ta.has-hover ? #a855f766 : #201a35;
 
                     HorizontalLayout {
                         padding-left: 16px;
@@ -175,13 +175,13 @@ export component PlaylistsView inherits Rectangle {
                             height: 38px;
                             y: 13px;
                             border-radius: 8px;
-                            background: #251624;
+                            background: #2c1747;
                             Path {
                                 width: 14px;
                                 height: 14px;
                                 x: 12px;
                                 y: 12px;
-                                fill: #ff3355;
+                                fill: #c084fc;
                                 commands: "M 1 2 L 13 2 L 13 4 L 1 4 Z M 1 6 L 13 6 L 13 8 L 1 8 Z M 1 10 L 9 10 L 9 12 L 1 12 Z";
                             }
                         }
@@ -199,7 +199,7 @@ export component PlaylistsView inherits Rectangle {
                             }
                             Text {
                                 text: pl.subtitle;
-                                color: #8e8ea2;
+                                color: #9f95ba;
                                 font-size: 11px;
                                 overflow: elide;
                             }
@@ -207,14 +207,14 @@ export component PlaylistsView inherits Rectangle {
 
                         if pl.track-count != "" : Text {
                             text: pl.track-count;
-                            color: #727284;
+                            color: #857c9c;
                             font-size: 11px;
                             vertical-alignment: center;
                         }
 
                         Text {
                             text: "→";
-                            color: #ff3355;
+                            color: #c084fc;
                             font-size: 14px;
                             font-weight: 700;
                             vertical-alignment: center;
@@ -240,10 +240,10 @@ export component PlaylistsView inherits Rectangle {
                 if root.active-playlist-tracks.length == 0 : Rectangle {
                     height: 180px;
                     border-radius: 12px;
-                    background: #13131b;
+                    background: #161126;
                     Text {
                         text: root.is-loading-tracks ? "Fetching playlist tracks from YouTube Music..." : "No tracks found in this playlist.";
-                        color: #8c8c9e;
+                        color: #988fae;
                         font-size: 13px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -253,9 +253,9 @@ export component PlaylistsView inherits Rectangle {
                 for track in root.active-playlist-tracks : Rectangle {
                     height: 56px;
                     border-radius: 8px;
-                    background: track.video-id == root.current-video-id ? #261622 : (track-row-ta.has-hover ? #181824 : #12121a);
+                    background: track.video-id == root.current-video-id ? #2e1a47 : (track-row-ta.has-hover ? #1e1733 : #151024);
                     border-width: 1px;
-                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1a1a26;
+                    border-color: track.video-id == root.current-video-id ? #a855f788 : #201a35;
 
                     track-row-ta := TouchArea {
                         clicked => {
@@ -273,7 +273,7 @@ export component PlaylistsView inherits Rectangle {
                             height: 32px;
                             y: 12px;
                             border-radius: 16px;
-                            background: track.video-id == root.current-video-id ? #ff0033 : (track-row-ta.has-hover ? #ff0033 : #222230);
+                            background: track.video-id == root.current-video-id ? #a855f7 : (track-row-ta.has-hover ? #9333ea : #241c3b);
                             Path {
                                 width: 10px;
                                 height: 10px;
@@ -297,7 +297,7 @@ export component PlaylistsView inherits Rectangle {
                             }
                             Text {
                                 text: track.artist;
-                                color: #8e8ea0;
+                                color: #9c92b8;
                                 font-size: 11px;
                                 overflow: elide;
                             }
@@ -322,7 +322,7 @@ export component PlaylistsView inherits Rectangle {
                         Text {
                             width: 44px;
                             text: track.duration;
-                            color: #7b7b8e;
+                            color: #8c82a8;
                             font-size: 11px;
                             horizontal-alignment: right;
                             vertical-alignment: center;
@@ -333,7 +333,7 @@ export component PlaylistsView inherits Rectangle {
                             height: 28px;
                             y: 14px;
                             border-radius: 6px;
-                            background: track.is-cached ? #19241e : (pldl-ta.has-hover ? #ff0033 : #222232);
+                            background: track.is-cached ? #17261d : (pldl-ta.has-hover ? #9333ea : #241c3d);
                             Text {
                                 text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
                                 color: #ffffff;

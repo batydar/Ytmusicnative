@@ -12,9 +12,9 @@ export component LoginDialog inherits Rectangle {
     width: 520px;
     height: 410px;
     border-radius: 14px;
-    background: #14141e;
+    background: #161128;
     border-width: 1px;
-    border-color: #2e2e44;
+    border-color: #2c234a;
 
     VerticalLayout {
         padding: 24px;
@@ -29,7 +29,7 @@ export component LoginDialog inherits Rectangle {
                     width: 18px;
                     height: 18px;
                     y: 2px;
-                    fill: #ff0033;
+                    fill: #a855f7;
                     commands: "M 9 1 A 4 4 0 1 0 9 9 A 4 4 0 1 0 9 1 Z M 3 16 A 6 6 0 0 1 15 16 Z";
                 }
                 Text {
@@ -43,7 +43,7 @@ export component LoginDialog inherits Rectangle {
                 width: 28px;
                 height: 28px;
                 border-radius: 14px;
-                background: close-ta.has-hover ? #2e2e40 : transparent;
+                background: close-ta.has-hover ? #2b2246 : transparent;
                 Text {
                     text: "✕";
                     color: #a0a0b2;
@@ -63,9 +63,9 @@ export component LoginDialog inherits Rectangle {
         Rectangle {
             height: 50px;
             border-radius: 8px;
-            background: root.is-logged-in ? #12301e : #251520;
+            background: root.is-logged-in ? #142e1f : #2a153f;
             border-width: 1px;
-            border-color: root.is-logged-in ? #22c55e66 : #ff003366;
+            border-color: root.is-logged-in ? #22c55e66 : #a855f766;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -73,7 +73,7 @@ export component LoginDialog inherits Rectangle {
                 alignment: center;
                 Text {
                     text: root.login-status-text != "" ? root.login-status-text : (root.is-logged-in ? "✓ Google Hesabınız Bağlı — Kişisel Öneriler ve Çalma Listeleri Aktif" : "Henüz giriş yapılmadı — Kişisel öneriler ve çalma listeleriniz için giriş yapın");
-                    color: root.is-logged-in ? #4ade80 : #ff859a;
+                    color: root.is-logged-in ? #4ade80 : #d8b4fe;
                     font-size: 12px;
                     font-weight: 700;
                     vertical-alignment: center;
@@ -85,9 +85,9 @@ export component LoginDialog inherits Rectangle {
         // Step-by-Step Direct Login & QR Info
         Rectangle {
             border-radius: 10px;
-            background: #0f0f17;
+            background: #100d1d;
             border-width: 1px;
-            border-color: #232334;
+            border-color: #221a37;
             VerticalLayout {
                 padding: 14px;
                 spacing: 8px;
@@ -99,7 +99,7 @@ export component LoginDialog inherits Rectangle {
                 }
                 Text {
                     text: "1. Aşağıdaki 'Google / QR Giriş Penceresini Aç' butonuna tıklayın.\n2. Açılan pencerede hesabınıza giriş yapın (İsterseniz 'Başka bir yöntem dene → Telefonunuzu kullanın' seçerek TV'deki gibi telefon kameranızla QR kod okutabilirsiniz).\n3. Giriş tamamlanıp YouTube Music açıldığında pencereyi kapatın veya 'Girişi Tamamla & Eşitle' butonuna basın.";
-                    color: #a6a6ba;
+                    color: #b0a7cb;
                     font-size: 11px;
                     wrap: word-wrap;
                 }
@@ -110,7 +110,7 @@ export component LoginDialog inherits Rectangle {
         Rectangle {
             height: 44px;
             border-radius: 10px;
-            background: open-login-ta.has-hover ? #ff1f4b : #ff0033;
+            background: open-login-ta.has-hover ? #9333ea : #7c3aed;
             HorizontalLayout {
                 alignment: center;
                 spacing: 10px;
@@ -149,12 +149,12 @@ export component LoginDialog inherits Rectangle {
                 width: 145px;
                 height: 38px;
                 border-radius: 8px;
-                background: logout-ta.has-hover ? #3b1c26 : #26161e;
+                background: logout-ta.has-hover ? #3b1b36 : #28152e;
                 border-width: 1px;
-                border-color: #ff003355;
+                border-color: #a855f755;
                 Text {
                     text: "Çıkış Yap / Değiştir";
-                    color: #ff8096;
+                    color: #e9bbf8;
                     font-size: 11px;
                     font-weight: 600;
                     horizontal-alignment: center;

@@ -13,7 +13,7 @@ export component DownloadsView inherits Rectangle {
     callback refresh-downloads();
     callback play-track(string);
 
-    background: #0d0d11;
+    background: #0e0b18;
 
     VerticalLayout {
         padding: 20px;
@@ -32,7 +32,7 @@ export component DownloadsView inherits Rectangle {
                 }
                 Text {
                     text: "Tracks matching <Artist> - <Title> [<id>].opus play directly from disk with zero network buffering.";
-                    color: #8c8c9c;
+                    color: #9a93b5;
                     font-size: 12px;
                 }
             }
@@ -41,9 +41,9 @@ export component DownloadsView inherits Rectangle {
                 width: 115px;
                 height: 34px;
                 border-radius: 6px;
-                background: rescan-ta.has-hover ? #2c2c38 : #1e1e28;
+                background: rescan-ta.has-hover ? #292045 : #1a142c;
                 border-width: 1px;
-                border-color: #323242;
+                border-color: #302552;
                 Text {
                     text: "↻ Rescan Disk";
                     color: #ffffff;
@@ -64,9 +64,9 @@ export component DownloadsView inherits Rectangle {
         Rectangle {
             height: 68px;
             border-radius: 10px;
-            background: #14141d;
+            background: #161126;
             border-width: 1px;
-            border-color: #262636;
+            border-color: #292044;
 
             HorizontalLayout {
                 padding: 14px;
@@ -78,13 +78,13 @@ export component DownloadsView inherits Rectangle {
                     spacing: 4px;
                     Text {
                         text: "ACTIVE DOWNLOAD & LOCAL CACHE DIRECTORY";
-                        color: #7c7c8e;
+                        color: #8e85aa;
                         font-size: 10px;
                         font-weight: 700;
                     }
                     Text {
                         text: root.download-folder;
-                        color: #e4e4f0;
+                        color: #eeeaf8;
                         font-size: 13px;
                         font-weight: 600;
                         overflow: elide;
@@ -95,7 +95,7 @@ export component DownloadsView inherits Rectangle {
                     width: 185px;
                     height: 38px;
                     border-radius: 6px;
-                    background: folder-ta.has-hover ? #ff1a47 : #ff0033;
+                    background: folder-ta.has-hover ? #9333ea : #7c3aed;
                     Text {
                         text: "Change Download Folder";
                         color: #ffffff;
@@ -117,9 +117,9 @@ export component DownloadsView inherits Rectangle {
         if root.active-download-title != "" : Rectangle {
             height: 68px;
             border-radius: 10px;
-            background: #191520;
+            background: #25173e;
             border-width: 1px;
-            border-color: #ff003366;
+            border-color: #a855f766;
 
             VerticalLayout {
                 padding: 12px;
@@ -136,7 +136,7 @@ export component DownloadsView inherits Rectangle {
                     }
                     Text {
                         text: root.active-download-status;
-                        color: #ff4d70;
+                        color: #c084fc;
                         font-size: 12px;
                         font-weight: 700;
                     }
@@ -145,13 +145,13 @@ export component DownloadsView inherits Rectangle {
                 Rectangle {
                     height: 8px;
                     border-radius: 4px;
-                    background: #2b2b38;
+                    background: #2f234f;
                     Rectangle {
                         x: 0px;
                         width: parent.width * (Math.clamp(root.active-download-progress, 0.0, 100.0) / 100.0);
                         height: parent.height;
                         border-radius: 4px;
-                        background: #ff0033;
+                        background: #a855f7;
                     }
                 }
             }
@@ -167,10 +167,10 @@ export component DownloadsView inherits Rectangle {
                 if root.downloaded-tracks.length == 0 : Rectangle {
                     height: 150px;
                     border-radius: 10px;
-                    background: #14141b;
+                    background: #161126;
                     Text {
                         text: "No cached .opus files in the selected download folder yet.";
-                        color: #8c8c9c;
+                        color: #988fae;
                         font-size: 13px;
                         horizontal-alignment: center;
                         vertical-alignment: center;
@@ -180,9 +180,9 @@ export component DownloadsView inherits Rectangle {
                 for track in root.downloaded-tracks : Rectangle {
                     height: 54px;
                     border-radius: 8px;
-                    background: track.video-id == root.current-video-id ? #261720 : (play-ta.has-hover ? #181822 : #13131a);
+                    background: track.video-id == root.current-video-id ? #2e1a47 : (play-ta.has-hover ? #1e1733 : #151024);
                     border-width: 1px;
-                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1f1f2a;
+                    border-color: track.video-id == root.current-video-id ? #a855f788 : #201a35;
 
                     play-ta := TouchArea {
                         clicked => {
@@ -200,7 +200,7 @@ export component DownloadsView inherits Rectangle {
                             height: 32px;
                             y: 10px;
                             border-radius: 16px;
-                            background: track.video-id == root.current-video-id ? #ff0033 : (play-ta.has-hover ? #ff0033 : #252534);
+                            background: track.video-id == root.current-video-id ? #a855f7 : (play-ta.has-hover ? #9333ea : #241c3b);
                             Text {
                                 text: "▶";
                                 color: #ffffff;
@@ -223,7 +223,7 @@ export component DownloadsView inherits Rectangle {
                             }
                             Text {
                                 text: track.artist + " • [" + track.video-id + "]";
-                                color: #9696a6;
+                                color: #a299bf;
                                 font-size: 11px;
                                 overflow: elide;
                             }

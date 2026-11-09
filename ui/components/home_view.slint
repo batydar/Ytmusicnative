@@ -28,7 +28,7 @@ export component HomeView inherits Rectangle {
     callback refresh-home();
     callback open-login();
 
-    background: #0d0d12;
+    background: #0e0b18;
 
     VerticalLayout {
         padding: 22px;
@@ -50,7 +50,7 @@ export component HomeView inherits Rectangle {
                 }
                 Text {
                     text: root.status-message != "" ? root.status-message : "Herhangi bir şarkıya tıkladığında benzerleriyle otomatik çalma listesi başlar";
-                    color: #8c8c9e;
+                    color: #9a93b5;
                     font-size: 12px;
                 }
             }
@@ -59,9 +59,9 @@ export component HomeView inherits Rectangle {
                 width: 118px;
                 height: 36px;
                 border-radius: 8px;
-                background: refresh-ta.has-hover ? #282838 : #181824;
+                background: refresh-ta.has-hover ? #292045 : #1a142c;
                 border-width: 1px;
-                border-color: #2c2c3e;
+                border-color: #302552;
                 HorizontalLayout {
                     alignment: center;
                     spacing: 6px;
@@ -91,16 +91,16 @@ export component HomeView inherits Rectangle {
         if root.autoplaylist-title == "" && !root.is-logged-in : Rectangle {
             height: 44px;
             border-radius: 10px;
-            background: #22131c;
+            background: #23143d;
             border-width: 1px;
-            border-color: #ff003355;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 16px;
                 padding-right: 16px;
                 alignment: space-between;
                 Text {
                     text: "Kendi YouTube Music önerilerinizi ve tüm kayıtlı çalma listelerinizi görmek için giriş yapın.";
-                    color: #f0d0d8;
+                    color: #eeddfc;
                     font-size: 12px;
                     font-weight: 500;
                     vertical-alignment: center;
@@ -110,7 +110,7 @@ export component HomeView inherits Rectangle {
                     height: 30px;
                     y: 7px;
                     border-radius: 6px;
-                    background: banner-login-ta.has-hover ? #ff1f4b : #ff0033;
+                    background: banner-login-ta.has-hover ? #9333ea : #7c3aed;
                     Text {
                         text: "Google / QR ile Giriş Yap";
                         color: #ffffff;
@@ -137,15 +137,15 @@ export component HomeView inherits Rectangle {
                 if root.tracks.length == 0 : Rectangle {
                     height: 180px;
                     border-radius: 12px;
-                    background: #13131b;
+                    background: #161126;
                     border-width: 1px;
-                    border-color: #20202e;
+                    border-color: #261e3f;
                     VerticalLayout {
                         alignment: center;
                         spacing: 8px;
                         Text {
                             text: root.is-loading ? "Önerilen şarkılar yükleniyor..." : "Henüz şarkı yüklenmedi.";
-                            color: #9e9eae;
+                            color: #9d94b8;
                             font-size: 14px;
                             horizontal-alignment: center;
                         }
@@ -155,9 +155,9 @@ export component HomeView inherits Rectangle {
                 for track in root.tracks : Rectangle {
                     height: 60px;
                     border-radius: 10px;
-                    background: track.video-id == root.current-video-id ? #271521 : (row-ta.has-hover ? #181824 : #12121a);
+                    background: track.video-id == root.current-video-id ? #2e1a47 : (row-ta.has-hover ? #1e1733 : #151024);
                     border-width: 1px;
-                    border-color: track.video-id == root.current-video-id ? #ff003388 : (row-ta.has-hover ? #28283a : #1b1b28);
+                    border-color: track.video-id == root.current-video-id ? #a855f788 : (row-ta.has-hover ? #302652 : #201a35);
 
                     row-ta := TouchArea {
                         clicked => {
@@ -175,7 +175,7 @@ export component HomeView inherits Rectangle {
                             height: 36px;
                             y: 12px;
                             border-radius: 18px;
-                            background: track.video-id == root.current-video-id ? #ff0033 : (row-ta.has-hover ? #ff0033 : #1e1e2a);
+                            background: track.video-id == root.current-video-id ? #a855f7 : (row-ta.has-hover ? #9333ea : #241c3b);
                             Path {
                                 width: 11px;
                                 height: 11px;
@@ -199,7 +199,7 @@ export component HomeView inherits Rectangle {
                             }
                             Text {
                                 text: track.artist;
-                                color: #9696aa;
+                                color: #a299bf;
                                 font-size: 12px;
                                 overflow: elide;
                             }
@@ -226,7 +226,7 @@ export component HomeView inherits Rectangle {
                         Text {
                             width: 46px;
                             text: track.duration;
-                            color: #848498;
+                            color: #9086ac;
                             font-size: 12px;
                             horizontal-alignment: right;
                             vertical-alignment: center;
@@ -237,9 +237,9 @@ export component HomeView inherits Rectangle {
                             height: 30px;
                             y: 15px;
                             border-radius: 7px;
-                            background: track.is-cached ? #19241e : (dl-btn-ta.has-hover ? #ff0033 : #20202e);
+                            background: track.is-cached ? #17261d : (dl-btn-ta.has-hover ? #9333ea : #241c3d);
                             border-width: 1px;
-                            border-color: track.is-cached ? #22c55e44 : #2e2e42;
+                            border-color: track.is-cached ? #22c55e44 : #322754;
                             Text {
                                 text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
                                 color: track.is-cached ? #4ade80 : #ffffff;
@@ -274,9 +274,9 @@ export component HomeView inherits Rectangle {
                     height: 36px;
                     y: 4px;
                     border-radius: 8px;
-                    background: back-ta.has-hover ? #282838 : #1a1a26;
+                    background: back-ta.has-hover ? #292045 : #1a142c;
                     border-width: 1px;
-                    border-color: #2e2e42;
+                    border-color: #302552;
                     Text {
                         text: "← Başlangıca Dön";
                         color: #ffffff;
@@ -305,7 +305,7 @@ export component HomeView inherits Rectangle {
                         text: root.autoplaylist-loading
                             ? "Benzer şarkılar YouTube Music'ten getiriliyor..."
                             : (root.autoplaylist-tracks.length + " benzer şarkı • Sırayla otomatik oynatılır");
-                        color: #9090a4;
+                        color: #9f95ba;
                         font-size: 12px;
                     }
                 }
@@ -321,9 +321,9 @@ export component HomeView inherits Rectangle {
                 for track[idx] in root.autoplaylist-tracks : Rectangle {
                     height: 56px;
                     border-radius: 8px;
-                    background: track.video-id == root.current-video-id ? #261522 : (pl-row-ta.has-hover ? #181824 : #12121a);
+                    background: track.video-id == root.current-video-id ? #2e1a47 : (pl-row-ta.has-hover ? #1e1733 : #151024);
                     border-width: 1px;
-                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1b1b28;
+                    border-color: track.video-id == root.current-video-id ? #a855f788 : #201a35;
 
                     pl-row-ta := TouchArea {
                         clicked => {
@@ -339,7 +339,7 @@ export component HomeView inherits Rectangle {
                         Text {
                             width: 24px;
                             text: track.video-id == root.current-video-id ? "▶" : (idx + 1);
-                            color: track.video-id == root.current-video-id ? #ff0033 : #68687a;
+                            color: track.video-id == root.current-video-id ? #c084fc : #797196;
                             font-size: 12px;
                             font-weight: 700;
                             horizontal-alignment: center;
@@ -351,7 +351,7 @@ export component HomeView inherits Rectangle {
                             height: 32px;
                             y: 12px;
                             border-radius: 16px;
-                            background: track.video-id == root.current-video-id ? #ff0033 : (pl-row-ta.has-hover ? #ff0033 : #20202e);
+                            background: track.video-id == root.current-video-id ? #a855f7 : (pl-row-ta.has-hover ? #9333ea : #241c3d);
                             Path {
                                 width: 10px;
                                 height: 10px;
@@ -368,14 +368,14 @@ export component HomeView inherits Rectangle {
                             spacing: 2px;
                             Text {
                                 text: track.title;
-                                color: track.video-id == root.current-video-id ? #ff4d6d : #ffffff;
+                                color: track.video-id == root.current-video-id ? #d8b4fe : #ffffff;
                                 font-size: 13px;
                                 font-weight: 600;
                                 overflow: elide;
                             }
                             Text {
                                 text: track.artist;
-                                color: #8e8ea2;
+                                color: #9c92b8;
                                 font-size: 11px;
                                 overflow: elide;
                             }
@@ -400,7 +400,7 @@ export component HomeView inherits Rectangle {
                         Text {
                             width: 44px;
                             text: track.duration;
-                            color: #7d7d90;
+                            color: #8c82a8;
                             font-size: 11px;
                             horizontal-alignment: right;
                             vertical-alignment: center;
@@ -411,7 +411,7 @@ export component HomeView inherits Rectangle {
                             height: 28px;
                             y: 14px;
                             border-radius: 6px;
-                            background: track.is-cached ? #19241e : (pl-dl-ta.has-hover ? #ff0033 : #20202e);
+                            background: track.is-cached ? #17261d : (pl-dl-ta.has-hover ? #9333ea : #241c3d);
                             Text {
                                 text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
                                 color: track.is-cached ? #4ade80 : #ffffff;

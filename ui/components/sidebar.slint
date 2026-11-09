@@ -13,9 +13,9 @@ export component Sidebar inherits Rectangle {
     callback open-login-dialog();
 
     width: 230px;
-    background: #0f0f14;
+    background: #110e1c;
     border-width: 1px;
-    border-color: #1a1a24;
+    border-color: #1f1932;
 
     VerticalLayout {
         padding: 16px;
@@ -43,7 +43,7 @@ export component Sidebar inherits Rectangle {
                 }
                 Text {
                     text: root.is-logged-in ? "HESAP BAĞLI ✓" : "NATIVE DESKTOP";
-                    color: root.is-logged-in ? #4ade80 : #ff3355;
+                    color: root.is-logged-in ? #4ade80 : #c084fc;
                     font-size: 9px;
                     font-weight: 700;
                     letter-spacing: 0.8px;
@@ -59,9 +59,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 38px;
             border-radius: 8px;
-            background: root.is-logged-in ? #12281c : (login-ta.has-hover ? #ff1a47 : #ff0033);
+            background: root.is-logged-in ? #1a152e : (login-ta.has-hover ? #9333ea : #7c3aed);
             border-width: 1px;
-            border-color: root.is-logged-in ? #22c55e55 : #ff4d70;
+            border-color: root.is-logged-in ? #a855f755 : #c084fc;
             HorizontalLayout {
                 padding-left: 12px;
                 padding-right: 12px;
@@ -95,7 +95,7 @@ export component Sidebar inherits Rectangle {
 
         Text {
             text: "MENU & DISCOVERY";
-            color: #5d5d70;
+            color: #756c91;
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -105,9 +105,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 40px;
             border-radius: 8px;
-            background: root.active-tab == 0 ? #261620 : (home-ta.has-hover ? #191924 : transparent);
+            background: root.active-tab == 0 ? #2a1745 : (home-ta.has-hover ? #1c162e : transparent);
             border-width: root.active-tab == 0 ? 1px : 0px;
-            border-color: #ff003344;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -116,12 +116,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 12px;
-                    fill: root.active-tab == 0 ? #ff0033 : (home-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.active-tab == 0 ? #c084fc : (home-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 8 1 L 1 7 L 3 7 L 3 15 L 6 15 L 6 10 L 10 10 L 10 15 L 13 15 L 13 7 L 15 7 Z";
                 }
                 Text {
                     text: "Home Feed";
-                    color: root.active-tab == 0 ? #ffffff : (home-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.active-tab == 0 ? #ffffff : (home-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 13px;
                     font-weight: root.active-tab == 0 ? 700 : 500;
                     vertical-alignment: center;
@@ -139,9 +139,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 40px;
             border-radius: 8px;
-            background: root.active-tab == 1 ? #261620 : (search-ta.has-hover ? #191924 : transparent);
+            background: root.active-tab == 1 ? #2a1745 : (search-ta.has-hover ? #1c162e : transparent);
             border-width: root.active-tab == 1 ? 1px : 0px;
-            border-color: #ff003344;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -150,12 +150,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 12px;
-                    fill: root.active-tab == 1 ? #ff0033 : (search-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.active-tab == 1 ? #c084fc : (search-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 6.5 1 A 5.5 5.5 0 1 0 10.4 10.4 L 14.5 14.5 L 15.5 13.5 L 11.4 9.4 A 5.5 5.5 0 0 0 6.5 1 Z M 6.5 2.5 A 4 4 0 1 1 2.5 6.5 A 4 4 0 0 1 6.5 2.5 Z";
                 }
                 Text {
                     text: "Search";
-                    color: root.active-tab == 1 ? #ffffff : (search-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.active-tab == 1 ? #ffffff : (search-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 13px;
                     font-weight: root.active-tab == 1 ? 700 : 500;
                     vertical-alignment: center;
@@ -173,9 +173,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 40px;
             border-radius: 8px;
-            background: root.active-tab == 3 ? #261620 : (pl-tab-ta.has-hover ? #191924 : transparent);
+            background: root.active-tab == 3 ? #2a1745 : (pl-tab-ta.has-hover ? #1c162e : transparent);
             border-width: root.active-tab == 3 ? 1px : 0px;
-            border-color: #ff003344;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -184,12 +184,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 12px;
-                    fill: root.active-tab == 3 ? #ff0033 : (pl-tab-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.active-tab == 3 ? #c084fc : (pl-tab-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 1 2 L 15 2 L 15 4 L 1 4 Z M 1 6 L 15 6 L 15 8 L 1 8 Z M 1 10 L 11 10 L 11 12 L 1 12 Z M 1 14 L 8 14 L 8 16 L 1 16 Z";
                 }
                 Text {
                     text: "Playlists";
-                    color: root.active-tab == 3 ? #ffffff : (pl-tab-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.active-tab == 3 ? #ffffff : (pl-tab-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 13px;
                     font-weight: root.active-tab == 3 ? 700 : 500;
                     vertical-alignment: center;
@@ -207,9 +207,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 40px;
             border-radius: 8px;
-            background: root.active-tab == 2 ? #261620 : (dl-ta.has-hover ? #191924 : transparent);
+            background: root.active-tab == 2 ? #2a1745 : (dl-ta.has-hover ? #1c162e : transparent);
             border-width: root.active-tab == 2 ? 1px : 0px;
-            border-color: #ff003344;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -218,12 +218,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 12px;
-                    fill: root.active-tab == 2 ? #ff0033 : (dl-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.active-tab == 2 ? #c084fc : (dl-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 7 1 L 9 1 L 9 8 L 12 8 L 8 12 L 4 8 L 7 8 Z M 2 13 L 14 13 L 14 15 L 2 15 Z";
                 }
                 Text {
                     text: "Downloads";
-                    color: root.active-tab == 2 ? #ffffff : (dl-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.active-tab == 2 ? #ffffff : (dl-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 13px;
                     font-weight: root.active-tab == 2 ? 700 : 500;
                     vertical-alignment: center;
@@ -243,7 +243,7 @@ export component Sidebar inherits Rectangle {
 
         Text {
             text: "DSP & LYRICS";
-            color: #5d5d70;
+            color: #756c91;
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -253,9 +253,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 38px;
             border-radius: 8px;
-            background: root.show-lyrics ? #261622 : (lyrics-ta.has-hover ? #191924 : transparent);
+            background: root.show-lyrics ? #2a1745 : (lyrics-ta.has-hover ? #1c162e : transparent);
             border-width: root.show-lyrics ? 1px : 0px;
-            border-color: #ff003355;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -264,12 +264,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 11px;
-                    fill: root.show-lyrics ? #ff3355 : (lyrics-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.show-lyrics ? #c084fc : (lyrics-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 10 1 L 14 2 L 14 9 A 3 3 0 1 1 11 7 L 11 4 L 7 5 L 7 11 A 3 3 0 1 1 4 9 L 4 3 Z";
                 }
                 Text {
                     text: "Synced Lyrics";
-                    color: root.show-lyrics ? #ffffff : (lyrics-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.show-lyrics ? #ffffff : (lyrics-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 12px;
                     font-weight: root.show-lyrics ? 600 : 500;
                     vertical-alignment: center;
@@ -286,9 +286,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 38px;
             border-radius: 8px;
-            background: root.show-eq ? #261622 : (eq-ta.has-hover ? #191924 : transparent);
+            background: root.show-eq ? #2a1745 : (eq-ta.has-hover ? #1c162e : transparent);
             border-width: root.show-eq ? 1px : 0px;
-            border-color: #ff003355;
+            border-color: #a855f755;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -297,12 +297,12 @@ export component Sidebar inherits Rectangle {
                     width: 16px;
                     height: 16px;
                     y: 11px;
-                    fill: root.show-eq ? #ff3355 : (eq-ta.has-hover ? #ffffff : #8a8a9e);
+                    fill: root.show-eq ? #c084fc : (eq-ta.has-hover ? #ffffff : #9890b0);
                     commands: "M 2 1 L 4 1 L 4 5 L 2 5 Z M 1 5 L 5 5 L 5 7 L 1 7 Z M 2 7 L 4 7 L 4 15 L 2 15 Z M 7 1 L 9 1 L 9 9 L 7 9 Z M 6 9 L 10 9 L 10 11 L 6 11 Z M 7 11 L 9 11 L 9 15 L 7 15 Z M 12 1 L 14 1 L 14 3 L 12 3 Z M 11 3 L 15 3 L 15 5 L 11 5 Z M 12 5 L 14 5 L 14 15 L 12 15 Z";
                 }
                 Text {
                     text: "Equalizer & DSP";
-                    color: root.show-eq ? #ffffff : (eq-ta.has-hover ? #e2e2ec : #9e9eaf);
+                    color: root.show-eq ? #ffffff : (eq-ta.has-hover ? #ede9fe : #a7a1bc);
                     font-size: 12px;
                     font-weight: root.show-eq ? 600 : 500;
                     vertical-alignment: center;
@@ -323,9 +323,9 @@ export component Sidebar inherits Rectangle {
         Rectangle {
             height: 72px;
             border-radius: 8px;
-            background: #14141d;
+            background: #171226;
             border-width: 1px;
-            border-color: #222230;
+            border-color: #282040;
             VerticalLayout {
                 padding: 10px;
                 spacing: 3px;
@@ -336,11 +336,11 @@ export component Sidebar inherits Rectangle {
                         height: 6px;
                         y: 4px;
                         border-radius: 3px;
-                        background: #22c55e;
+                        background: #a855f7;
                     }
                     Text {
                         text: "MPV PIPE ENGINE";
-                        color: #7b7b90;
+                        color: #8c82a8;
                         font-size: 9px;
                         font-weight: 700;
                         letter-spacing: 0.5px;
@@ -348,13 +348,13 @@ export component Sidebar inherits Rectangle {
                 }
                 Text {
                     text: "Preset: " + root.active-eq-preset + (root.normalization-enabled ? " + DynNorm" : "");
-                    color: #d8d8e8;
+                    color: #e2dcf7;
                     font-size: 11px;
                     overflow: elide;
                 }
                 Text {
                     text: "Source: " + root.playback-source-badge;
-                    color: #4ade80;
+                    color: #c084fc;
                     font-size: 11px;
                     font-weight: 600;
                     overflow: elide;
