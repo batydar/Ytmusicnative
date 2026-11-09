@@ -1,0 +1,435 @@
+import { ScrollView } from "std-widgets.slint";
+
+export struct UiTrack {
+    video-id: string,
+    title: string,
+    artist: string,
+    duration: string,
+    duration-secs: int,
+    is-cached: bool,
+    is-downloading: bool,
+    download-progress: float,
+}
+
+export component HomeView inherits Rectangle {
+    in property <[UiTrack]> tracks: [];
+    in property <[UiTrack]> autoplaylist-tracks: [];
+    in property <string> autoplaylist-title: "";
+    in property <bool> autoplaylist-loading: false;
+    in property <bool> is-loading: false;
+    in property <bool> is-logged-in: false;
+    in property <string> current-video-id: "";
+    in property <string> status-message: "";
+
+    callback play-track(string);
+    callback play-in-playlist(string);
+    callback close-autoplaylist();
+    callback download-track(string);
+    callback refresh-home();
+    callback open-login();
+
+    background: #0d0d12;
+
+    VerticalLayout {
+        padding: 22px;
+        spacing: 14px;
+
+        // =========================================================================
+        // MODE 1: CLEAN HOME SCREEN (BAŞLANGIÇ - ÖNERİLENLER)
+        // =========================================================================
+        if root.autoplaylist-title == "" : HorizontalLayout {
+            alignment: space-between;
+            VerticalLayout {
+                spacing: 4px;
+                Text {
+                    text: root.is-logged-in ? "Senin İçin Önerilenler" : "Başlangıç & Önerilenler";
+                    color: #ffffff;
+                    font-size: 22px;
+                    font-weight: 700;
+                    letter-spacing: 0.2px;
+                }
+                Text {
+                    text: root.status-message != "" ? root.status-message : "Herhangi bir şarkıya tıkladığında benzerleriyle otomatik çalma listesi başlar";
+                    color: #8c8c9e;
+                    font-size: 12px;
+                }
+            }
+
+            Rectangle {
+                width: 118px;
+                height: 36px;
+                border-radius: 8px;
+                background: refresh-ta.has-hover ? #282838 : #181824;
+                border-width: 1px;
+                border-color: #2c2c3e;
+                HorizontalLayout {
+                    alignment: center;
+                    spacing: 6px;
+                    Path {
+                        width: 12px;
+                        height: 12px;
+                        y: 12px;
+                        fill: #ffffff;
+                        commands: "M 6 1 A 5 5 0 1 0 11 6 L 9.5 6 A 3.5 3.5 0 1 1 6 2.5 L 6 4 L 9 2 L 6 0 Z";
+                    }
+                    Text {
+                        text: root.is-loading ? "Yükleniyor..." : "Yenile";
+                        color: #ffffff;
+                        font-size: 12px;
+                        font-weight: 600;
+                        vertical-alignment: center;
+                    }
+                }
+                refresh-ta := TouchArea {
+                    clicked => {
+                        root.refresh-home();
+                    }
+                }
+            }
+        }
+
+        if root.autoplaylist-title == "" && !root.is-logged-in : Rectangle {
+            height: 44px;
+            border-radius: 10px;
+            background: #22131c;
+            border-width: 1px;
+            border-color: #ff003355;
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 16px;
+                alignment: space-between;
+                Text {
+                    text: "Kendi YouTube Music önerilerinizi ve tüm kayıtlı çalma listelerinizi görmek için giriş yapın.";
+                    color: #f0d0d8;
+                    font-size: 12px;
+                    font-weight: 500;
+                    vertical-alignment: center;
+                }
+                Rectangle {
+                    width: 160px;
+                    height: 30px;
+                    y: 7px;
+                    border-radius: 6px;
+                    background: banner-login-ta.has-hover ? #ff1f4b : #ff0033;
+                    Text {
+                        text: "Google / QR ile Giriş Yap";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 700;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    banner-login-ta := TouchArea {
+                        clicked => {
+                            root.open-login();
+                        }
+                    }
+                }
+            }
+        }
+
+        if root.autoplaylist-title == "" : ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 8px;
+                alignment: start;
+
+                if root.tracks.length == 0 : Rectangle {
+                    height: 180px;
+                    border-radius: 12px;
+                    background: #13131b;
+                    border-width: 1px;
+                    border-color: #20202e;
+                    VerticalLayout {
+                        alignment: center;
+                        spacing: 8px;
+                        Text {
+                            text: root.is-loading ? "Önerilen şarkılar yükleniyor..." : "Henüz şarkı yüklenmedi.";
+                            color: #9e9eae;
+                            font-size: 14px;
+                            horizontal-alignment: center;
+                        }
+                    }
+                }
+
+                for track in root.tracks : Rectangle {
+                    height: 60px;
+                    border-radius: 10px;
+                    background: track.video-id == root.current-video-id ? #271521 : (row-ta.has-hover ? #181824 : #12121a);
+                    border-width: 1px;
+                    border-color: track.video-id == root.current-video-id ? #ff003388 : (row-ta.has-hover ? #28283a : #1b1b28);
+
+                    row-ta := TouchArea {
+                        clicked => {
+                            root.play-track(track.video-id);
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 14px;
+                        padding-right: 14px;
+                        spacing: 14px;
+
+                        Rectangle {
+                            width: 36px;
+                            height: 36px;
+                            y: 12px;
+                            border-radius: 18px;
+                            background: track.video-id == root.current-video-id ? #ff0033 : (row-ta.has-hover ? #ff0033 : #1e1e2a);
+                            Path {
+                                width: 11px;
+                                height: 11px;
+                                x: 13px;
+                                y: 12px;
+                                fill: #ffffff;
+                                commands: "M 0 0 L 11 5.5 L 0 11 Z";
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 3px;
+                            Text {
+                                text: track.title;
+                                color: #ffffff;
+                                font-size: 14px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: track.artist;
+                                color: #9696aa;
+                                font-size: 12px;
+                                overflow: elide;
+                            }
+                        }
+
+                        if track.is-cached : Rectangle {
+                            width: 90px;
+                            height: 22px;
+                            y: 19px;
+                            border-radius: 11px;
+                            background: #123222;
+                            border-width: 1px;
+                            border-color: #22c55e66;
+                            Text {
+                                text: "LOCAL OPUS";
+                                color: #4ade80;
+                                font-size: 9px;
+                                font-weight: 700;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        Text {
+                            width: 46px;
+                            text: track.duration;
+                            color: #848498;
+                            font-size: 12px;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                        }
+
+                        Rectangle {
+                            width: 92px;
+                            height: 30px;
+                            y: 15px;
+                            border-radius: 7px;
+                            background: track.is-cached ? #19241e : (dl-btn-ta.has-hover ? #ff0033 : #20202e);
+                            border-width: 1px;
+                            border-color: track.is-cached ? #22c55e44 : #2e2e42;
+                            Text {
+                                text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
+                                color: track.is-cached ? #4ade80 : #ffffff;
+                                font-size: 11px;
+                                font-weight: 600;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            dl-btn-ta := TouchArea {
+                                enabled: !track.is-cached && !track.is-downloading;
+                                clicked => {
+                                    root.download-track(track.video-id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // =========================================================================
+        // MODE 2: SONG CLICKED -> AUTO-PLAYLIST WITH SIMILAR TRACKS (RDAMVM<id>)
+        // =========================================================================
+        if root.autoplaylist-title != "" : HorizontalLayout {
+            alignment: space-between;
+            spacing: 12px;
+
+            HorizontalLayout {
+                spacing: 12px;
+                Rectangle {
+                    width: 138px;
+                    height: 36px;
+                    y: 4px;
+                    border-radius: 8px;
+                    background: back-ta.has-hover ? #282838 : #1a1a26;
+                    border-width: 1px;
+                    border-color: #2e2e42;
+                    Text {
+                        text: "← Başlangıca Dön";
+                        color: #ffffff;
+                        font-size: 12px;
+                        font-weight: 600;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    back-ta := TouchArea {
+                        clicked => {
+                            root.close-autoplaylist();
+                        }
+                    }
+                }
+
+                VerticalLayout {
+                    spacing: 2px;
+                    Text {
+                        text: root.autoplaylist-title;
+                        color: #ffffff;
+                        font-size: 19px;
+                        font-weight: 700;
+                        overflow: elide;
+                    }
+                    Text {
+                        text: root.autoplaylist-loading
+                            ? "Benzer şarkılar YouTube Music'ten getiriliyor..."
+                            : (root.autoplaylist-tracks.length + " benzer şarkı • Sırayla otomatik oynatılır");
+                        color: #9090a4;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
+        if root.autoplaylist-title != "" : ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 6px;
+                alignment: start;
+
+                for track[idx] in root.autoplaylist-tracks : Rectangle {
+                    height: 56px;
+                    border-radius: 8px;
+                    background: track.video-id == root.current-video-id ? #261522 : (pl-row-ta.has-hover ? #181824 : #12121a);
+                    border-width: 1px;
+                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1b1b28;
+
+                    pl-row-ta := TouchArea {
+                        clicked => {
+                            root.play-in-playlist(track.video-id);
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 14px;
+                        padding-right: 14px;
+                        spacing: 12px;
+
+                        Text {
+                            width: 24px;
+                            text: track.video-id == root.current-video-id ? "▶" : (idx + 1);
+                            color: track.video-id == root.current-video-id ? #ff0033 : #68687a;
+                            font-size: 12px;
+                            font-weight: 700;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+
+                        Rectangle {
+                            width: 32px;
+                            height: 32px;
+                            y: 12px;
+                            border-radius: 16px;
+                            background: track.video-id == root.current-video-id ? #ff0033 : (pl-row-ta.has-hover ? #ff0033 : #20202e);
+                            Path {
+                                width: 10px;
+                                height: 10px;
+                                x: 12px;
+                                y: 11px;
+                                fill: #ffffff;
+                                commands: "M 0 0 L 10 5 L 0 10 Z";
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 2px;
+                            Text {
+                                text: track.title;
+                                color: track.video-id == root.current-video-id ? #ff4d6d : #ffffff;
+                                font-size: 13px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: track.artist;
+                                color: #8e8ea2;
+                                font-size: 11px;
+                                overflow: elide;
+                            }
+                        }
+
+                        if track.is-cached : Rectangle {
+                            width: 86px;
+                            height: 22px;
+                            y: 17px;
+                            border-radius: 11px;
+                            background: #113020;
+                            Text {
+                                text: "LOCAL OPUS";
+                                color: #4ade80;
+                                font-size: 9px;
+                                font-weight: 700;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        Text {
+                            width: 44px;
+                            text: track.duration;
+                            color: #7d7d90;
+                            font-size: 11px;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                        }
+
+                        Rectangle {
+                            width: 88px;
+                            height: 28px;
+                            y: 14px;
+                            border-radius: 6px;
+                            background: track.is-cached ? #19241e : (pl-dl-ta.has-hover ? #ff0033 : #20202e);
+                            Text {
+                                text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
+                                color: track.is-cached ? #4ade80 : #ffffff;
+                                font-size: 11px;
+                                font-weight: 600;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            pl-dl-ta := TouchArea {
+                                enabled: !track.is-cached && !track.is-downloading;
+                                clicked => {
+                                    root.download-track(track.video-id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

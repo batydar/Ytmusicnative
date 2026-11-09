@@ -1,0 +1,308 @@
+export component PlayerBar inherits Rectangle {
+    in property <string> current-title: "No Track Selected";
+    in property <string> current-artist: "Select any song from Home, Search, or Downloads";
+    in property <bool> is-playing: false;
+    in property <float> time-pos: 0.0;
+    in property <float> duration: 0.0;
+    in property <string> time-pos-text: "00:00";
+    in property <string> duration-text: "00:00";
+    in property <float> volume: 80.0;
+    in property <string> playback-source-badge: "IDLE";
+    in property <bool> can-download-current: false;
+
+    callback play-pause-clicked();
+    callback next-clicked();
+    callback prev-clicked();
+    callback seek-to(float);
+    callback volume-changed(float);
+    callback download-current();
+    callback toggle-eq();
+    callback toggle-lyrics();
+
+    height: 88px;
+    background: #111117;
+    border-width: 1px;
+    border-color: #20202d;
+
+    VerticalLayout {
+        padding: 0px;
+        spacing: 0px;
+
+        // Interactive Top Seek Bar with Hover Highlight
+        Rectangle {
+            height: seek-ta.has-hover ? 8px : 5px;
+            background: #252534;
+            Rectangle {
+                x: 0px;
+                width: root.duration > 0.1 ? parent.width * Math.clamp(root.time-pos / root.duration, 0.0, 1.0) : 0px;
+                height: parent.height;
+                background: seek-ta.has-hover ? #ff264f : #ff0033;
+            }
+            seek-ta := TouchArea {
+                clicked => {
+                    if (root.duration > 0.1) {
+                        root.seek-to((self.mouse-x / self.width) * root.duration);
+                    }
+                }
+            }
+        }
+
+        HorizontalLayout {
+            padding-left: 20px;
+            padding-right: 20px;
+            spacing: 16px;
+            vertical-stretch: 1;
+
+            // Left: Current Track Info & Source Badge
+            VerticalLayout {
+                width: 300px;
+                alignment: center;
+                spacing: 3px;
+                Text {
+                    text: root.current-title;
+                    color: #ffffff;
+                    font-size: 14px;
+                    font-weight: 700;
+                    overflow: elide;
+                }
+                HorizontalLayout {
+                    spacing: 8px;
+                    Text {
+                        text: root.current-artist;
+                        color: #9e9eb0;
+                        font-size: 12px;
+                        overflow: elide;
+                    }
+                    Rectangle {
+                        width: 82px;
+                        height: 18px;
+                        border-radius: 9px;
+                        background: root.playback-source-badge == "DISK OPUS" ? #143322 : #222230;
+                        Text {
+                            text: root.playback-source-badge;
+                            color: root.playback-source-badge == "DISK OPUS" ? #4ade80 : #9090a2;
+                            font-size: 9px;
+                            font-weight: 700;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
+
+            // Center: Vector Transport Controls & Time
+            HorizontalLayout {
+                horizontal-stretch: 1;
+                alignment: center;
+                spacing: 16px;
+
+                Text {
+                    width: 44px;
+                    text: root.time-pos-text;
+                    color: #8c8c9c;
+                    font-size: 12px;
+                    horizontal-alignment: right;
+                    vertical-alignment: center;
+                }
+
+                // Previous Vector Button
+                Rectangle {
+                    width: 36px;
+                    height: 36px;
+                    y: 23px;
+                    border-radius: 18px;
+                    background: prev-ta.has-hover ? #2a2a3a : #1d1d28;
+                    Path {
+                        width: 14px;
+                        height: 14px;
+                        x: 11px;
+                        y: 11px;
+                        fill: prev-ta.has-hover ? #ffffff : #c0c0d0;
+                        // Bar + triangle left
+                        commands: "M 0 1 L 2 1 L 2 13 L 0 13 Z M 14 1 L 4 7 L 14 13 Z";
+                    }
+                    prev-ta := TouchArea {
+                        clicked => {
+                            root.prev-clicked();
+                        }
+                    }
+                }
+
+                // Play / Pause Main Vector Button
+                Rectangle {
+                    width: 46px;
+                    height: 46px;
+                    y: 18px;
+                    border-radius: 23px;
+                    background: pp-ta.has-hover ? #ff1a47 : #ff0033;
+                    if !root.is-playing : Path {
+                        width: 16px;
+                        height: 16px;
+                        x: 17px;
+                        y: 15px;
+                        fill: #ffffff;
+                        commands: "M 0 0 L 16 8 L 0 16 Z";
+                    }
+                    if root.is-playing : Path {
+                        width: 14px;
+                        height: 16px;
+                        x: 16px;
+                        y: 15px;
+                        fill: #ffffff;
+                        commands: "M 0 0 L 4 0 L 4 16 L 0 16 Z M 8 0 L 12 0 L 12 16 L 8 16 Z";
+                    }
+                    pp-ta := TouchArea {
+                        clicked => {
+                            root.play-pause-clicked();
+                        }
+                    }
+                }
+
+                // Next Vector Button
+                Rectangle {
+                    width: 36px;
+                    height: 36px;
+                    y: 23px;
+                    border-radius: 18px;
+                    background: next-ta.has-hover ? #2a2a3a : #1d1d28;
+                    Path {
+                        width: 14px;
+                        height: 14px;
+                        x: 11px;
+                        y: 11px;
+                        fill: next-ta.has-hover ? #ffffff : #c0c0d0;
+                        // Triangle right + bar
+                        commands: "M 0 1 L 10 7 L 0 13 Z M 12 1 L 14 1 L 14 13 L 12 13 Z";
+                    }
+                    next-ta := TouchArea {
+                        clicked => {
+                            root.next-clicked();
+                        }
+                    }
+                }
+
+                Text {
+                    width: 44px;
+                    text: root.duration-text;
+                    color: #8c8c9c;
+                    font-size: 12px;
+                    horizontal-alignment: left;
+                    vertical-alignment: center;
+                }
+            }
+
+            // Right: Volume Slider, Quick Download, EQ, LRC
+            HorizontalLayout {
+                spacing: 12px;
+                alignment: end;
+
+                // Volume Control (Speaker Icon + Slider)
+                HorizontalLayout {
+                    spacing: 8px;
+                    Path {
+                        width: 14px;
+                        height: 14px;
+                        y: 35px;
+                        fill: #9a9ab2;
+                        commands: "M 1 4 L 4 4 L 8 1 L 8 13 L 4 10 L 1 10 Z M 10 4 A 4 4 0 0 1 10 10 L 11 11 A 5.5 5.5 0 0 0 11 3 Z";
+                    }
+                    Rectangle {
+                        width: 84px;
+                        height: 6px;
+                        y: 39px;
+                        border-radius: 3px;
+                        background: #2b2b3a;
+                        Rectangle {
+                            x: 0px;
+                            width: parent.width * Math.clamp(root.volume / 100.0, 0.0, 1.0);
+                            height: parent.height;
+                            border-radius: 3px;
+                            background: #e2e2f0;
+                        }
+                        TouchArea {
+                            clicked => {
+                                root.volume-changed(Math.clamp((self.mouse-x / self.width) * 100.0, 0.0, 100.0));
+                            }
+                        }
+                    }
+                }
+
+                // Download Button for current song
+                if root.can-download-current : Rectangle {
+                    width: 76px;
+                    height: 32px;
+                    y: 26px;
+                    border-radius: 8px;
+                    background: dl-cur-ta.has-hover ? #ff0033 : #222230;
+                    HorizontalLayout {
+                        alignment: center;
+                        spacing: 6px;
+                        Path {
+                            width: 10px;
+                            height: 10px;
+                            y: 11px;
+                            fill: #ffffff;
+                            commands: "M 4 0 L 6 0 L 6 5 L 8 5 L 5 8 L 2 5 L 4 5 Z M 1 9 L 9 9 L 9 10 L 1 10 Z";
+                        }
+                        Text {
+                            text: "Opus";
+                            color: #ffffff;
+                            font-size: 11px;
+                            font-weight: 600;
+                            vertical-alignment: center;
+                        }
+                    }
+                    dl-cur-ta := TouchArea {
+                        clicked => {
+                            root.download-current();
+                        }
+                    }
+                }
+
+                // EQ Button
+                Rectangle {
+                    width: 50px;
+                    height: 32px;
+                    y: 26px;
+                    border-radius: 8px;
+                    background: eq-btn-ta.has-hover ? #2e2e42 : #222230;
+                    Text {
+                        text: "EQ";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 700;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    eq-btn-ta := TouchArea {
+                        clicked => {
+                            root.toggle-eq();
+                        }
+                    }
+                }
+
+                // Synced Lyrics Button
+                Rectangle {
+                    width: 54px;
+                    height: 32px;
+                    y: 26px;
+                    border-radius: 8px;
+                    background: lyr-btn-ta.has-hover ? #2e2e42 : #222230;
+                    Text {
+                        text: "LRC";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 700;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    lyr-btn-ta := TouchArea {
+                        clicked => {
+                            root.toggle-lyrics();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

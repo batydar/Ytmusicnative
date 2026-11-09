@@ -1,0 +1,357 @@
+import { ScrollView } from "std-widgets.slint";
+import { UiTrack } from "home_view.slint";
+
+export struct UiPlaylist {
+    browse-id: string,
+    title: string,
+    subtitle: string,
+    track-count: string,
+}
+
+export component PlaylistsView inherits Rectangle {
+    in property <[UiPlaylist]> playlists: [];
+    in property <bool> is-loading: false;
+    in property <bool> is-logged-in: false;
+    in property <string> active-browse-id: "";
+    in property <string> active-playlist-title: "";
+    in property <[UiTrack]> active-playlist-tracks: [];
+    in property <bool> is-loading-tracks: false;
+    in property <string> current-video-id: "";
+
+    callback select-playlist(string, string);
+    callback play-track(string);
+    callback download-track(string);
+    callback refresh-playlists();
+    callback open-login();
+
+    background: #0b0b0f;
+
+    VerticalLayout {
+        padding: 22px;
+        spacing: 14px;
+
+        // Top Bar
+        HorizontalLayout {
+            alignment: space-between;
+            VerticalLayout {
+                spacing: 3px;
+                Text {
+                    text: root.active-browse-id != "" ? ("Çalma Listesi: " + root.active-playlist-title) : (root.is-logged-in ? "Kaydettiğin ve Oluşturduğun Çalma Listeleri" : "Çalma Listeleri & Koleksiyonlar");
+                    color: #ffffff;
+                    font-size: 20px;
+                    font-weight: 700;
+                }
+                Text {
+                    text: root.active-browse-id != "" ? "Anında dinlemek veya Opus önbelleğine indirmek için bir şarkı seçin" : (root.is-logged-in ? ("Kitaplığınızda " + root.playlists.length + " çalma listesi ve karışım bulundu") : "Kendi kaydettiğiniz ve oluşturduğunuz listeler için giriş yapın");
+                    color: #7e7e92;
+                    font-size: 12px;
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 10px;
+
+                if root.active-browse-id == "" : Rectangle {
+                    width: 124px;
+                    height: 34px;
+                    border-radius: 8px;
+                    background: ref-pl-ta.has-hover ? #2e2e40 : #1c1c28;
+                    border-width: 1px;
+                    border-color: #313144;
+                    Text {
+                        text: root.is-loading ? "Yükleniyor..." : "Listeleri Yenile";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 600;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    ref-pl-ta := TouchArea {
+                        clicked => {
+                            root.refresh-playlists();
+                        }
+                    }
+                }
+
+                if root.active-browse-id != "" : Rectangle {
+                    width: 120px;
+                    height: 34px;
+                    border-radius: 8px;
+                    background: back-ta.has-hover ? #2e2e40 : #1c1c28;
+                    border-width: 1px;
+                    border-color: #313144;
+                    Text {
+                        text: "← Listelere Dön";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 600;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    back-ta := TouchArea {
+                        clicked => {
+                            root.select-playlist("", "");
+                        }
+                    }
+                }
+            }
+        }
+
+        if !root.is-logged-in && root.active-browse-id == "" : Rectangle {
+            height: 46px;
+            border-radius: 10px;
+            background: #22131c;
+            border-width: 1px;
+            border-color: #ff003355;
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 16px;
+                alignment: space-between;
+                Text {
+                    text: "Oluşturduğunuz ve kaydettiğiniz tüm çalma listelerini görmek için hesabınıza giriş yapın.";
+                    color: #f0d0d8;
+                    font-size: 12px;
+                    font-weight: 500;
+                    vertical-alignment: center;
+                }
+                Rectangle {
+                    width: 165px;
+                    height: 30px;
+                    y: 8px;
+                    border-radius: 6px;
+                    background: pl-login-ta.has-hover ? #ff1f4b : #ff0033;
+                    Text {
+                        text: "Google / QR ile Giriş Yap";
+                        color: #ffffff;
+                        font-size: 11px;
+                        font-weight: 700;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    pl-login-ta := TouchArea {
+                        clicked => {
+                            root.open-login();
+                        }
+                    }
+                }
+            }
+        }
+
+        // View Mode 1: Playlists Grid / List
+        if root.active-browse-id == "" : ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 8px;
+                alignment: start;
+
+                if root.playlists.length == 0 : Rectangle {
+                    height: 180px;
+                    border-radius: 12px;
+                    background: #13131b;
+                    Text {
+                        text: root.is-loading ? "Loading playlists..." : "No playlists loaded. Click Refresh above or login with cookies.";
+                        color: #8c8c9e;
+                        font-size: 13px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                for pl in root.playlists : Rectangle {
+                    height: 64px;
+                    border-radius: 10px;
+                    background: pl-ta.has-hover ? #1c1c28 : #13131c;
+                    border-width: 1px;
+                    border-color: pl-ta.has-hover ? #ff003366 : #1e1e2c;
+
+                    HorizontalLayout {
+                        padding-left: 16px;
+                        padding-right: 16px;
+                        spacing: 14px;
+
+                        // Playlist Art / Icon Placeholder
+                        Rectangle {
+                            width: 38px;
+                            height: 38px;
+                            y: 13px;
+                            border-radius: 8px;
+                            background: #251624;
+                            Path {
+                                width: 14px;
+                                height: 14px;
+                                x: 12px;
+                                y: 12px;
+                                fill: #ff3355;
+                                commands: "M 1 2 L 13 2 L 13 4 L 1 4 Z M 1 6 L 13 6 L 13 8 L 1 8 Z M 1 10 L 9 10 L 9 12 L 1 12 Z";
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 3px;
+                            Text {
+                                text: pl.title;
+                                color: #ffffff;
+                                font-size: 14px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: pl.subtitle;
+                                color: #8e8ea2;
+                                font-size: 11px;
+                                overflow: elide;
+                            }
+                        }
+
+                        if pl.track-count != "" : Text {
+                            text: pl.track-count;
+                            color: #727284;
+                            font-size: 11px;
+                            vertical-alignment: center;
+                        }
+
+                        Text {
+                            text: "→";
+                            color: #ff3355;
+                            font-size: 14px;
+                            font-weight: 700;
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    pl-ta := TouchArea {
+                        clicked => {
+                            root.select-playlist(pl.browse-id, pl.title);
+                        }
+                    }
+                }
+            }
+        }
+
+        // View Mode 2: Tracks inside the selected Playlist
+        if root.active-browse-id != "" : ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 6px;
+                alignment: start;
+
+                if root.active-playlist-tracks.length == 0 : Rectangle {
+                    height: 180px;
+                    border-radius: 12px;
+                    background: #13131b;
+                    Text {
+                        text: root.is-loading-tracks ? "Fetching playlist tracks from YouTube Music..." : "No tracks found in this playlist.";
+                        color: #8c8c9e;
+                        font-size: 13px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                for track in root.active-playlist-tracks : Rectangle {
+                    height: 56px;
+                    border-radius: 8px;
+                    background: track.video-id == root.current-video-id ? #261622 : (track-row-ta.has-hover ? #181824 : #12121a);
+                    border-width: 1px;
+                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1a1a26;
+
+                    track-row-ta := TouchArea {
+                        clicked => {
+                            root.play-track(track.video-id);
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 14px;
+                        padding-right: 14px;
+                        spacing: 12px;
+
+                        Rectangle {
+                            width: 32px;
+                            height: 32px;
+                            y: 12px;
+                            border-radius: 16px;
+                            background: track.video-id == root.current-video-id ? #ff0033 : (track-row-ta.has-hover ? #ff0033 : #222230);
+                            Path {
+                                width: 10px;
+                                height: 10px;
+                                x: 12px;
+                                y: 11px;
+                                fill: #ffffff;
+                                commands: "M 0 0 L 10 5 L 0 10 Z";
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 2px;
+                            Text {
+                                text: track.title;
+                                color: #ffffff;
+                                font-size: 13px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: track.artist;
+                                color: #8e8ea0;
+                                font-size: 11px;
+                                overflow: elide;
+                            }
+                        }
+
+                        if track.is-cached : Rectangle {
+                            width: 86px;
+                            height: 22px;
+                            y: 17px;
+                            border-radius: 11px;
+                            background: #113020;
+                            Text {
+                                text: "OPUS CACHED";
+                                color: #4ade80;
+                                font-size: 9px;
+                                font-weight: 700;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        Text {
+                            width: 44px;
+                            text: track.duration;
+                            color: #7b7b8e;
+                            font-size: 11px;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                        }
+
+                        Rectangle {
+                            width: 80px;
+                            height: 28px;
+                            y: 14px;
+                            border-radius: 6px;
+                            background: track.is-cached ? #19241e : (pldl-ta.has-hover ? #ff0033 : #222232);
+                            Text {
+                                text: track.is-cached ? "✓ Saved" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "Download");
+                                color: #ffffff;
+                                font-size: 11px;
+                                font-weight: 600;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            pldl-ta := TouchArea {
+                                enabled: !track.is-cached && !track.is-downloading;
+                                clicked => {
+                                    root.download-track(track.video-id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

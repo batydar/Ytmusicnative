@@ -1,0 +1,156 @@
+export component EqPopover inherits Rectangle {
+    in property <string> active-preset: "Flat";
+    in property <bool> normalization-enabled: false;
+    in property <bool> sponsorblock-enabled: true;
+    in property <string> filter-chain-preview: "";
+
+    callback select-preset(string);
+    callback toggle-normalization(bool);
+    callback toggle-sponsorblock(bool);
+    callback close-popover();
+
+    width: 310px;
+    height: 350px;
+    border-radius: 12px;
+    background: #171721;
+    border-width: 1px;
+    border-color: #343448;
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 10px;
+
+        HorizontalLayout {
+            alignment: space-between;
+            Text {
+                text: "Real-Time Audio DSP (MPV af)";
+                color: #ffffff;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            Rectangle {
+                width: 24px;
+                height: 24px;
+                border-radius: 12px;
+                background: close-ta.has-hover ? #2e2e3e : transparent;
+                Text {
+                    text: "✕";
+                    color: #a0a0b0;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                close-ta := TouchArea {
+                    clicked => {
+                        root.close-popover();
+                    }
+                }
+            }
+        }
+
+        Text {
+            text: "SUPEREQUALIZER PRESETS";
+            color: #7c7c8e;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        for preset-name in ["Flat", "Bass Boost", "Treble Boost", "V-Shape", "Vocal"] : Rectangle {
+            height: 32px;
+            border-radius: 6px;
+            background: root.active-preset == preset-name ? #ff0033 : (p-ta.has-hover ? #252534 : #1e1e2a);
+            HorizontalLayout {
+                padding-left: 12px;
+                padding-right: 12px;
+                alignment: space-between;
+                Text {
+                    text: preset-name;
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: root.active-preset == preset-name ? 700 : 500;
+                    vertical-alignment: center;
+                }
+                if root.active-preset == preset-name : Text {
+                    text: "ACTIVE";
+                    color: #ffffff;
+                    font-size: 10px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                }
+            }
+            p-ta := TouchArea {
+                clicked => {
+                    root.select-preset(preset-name);
+                }
+            }
+        }
+
+        // Loudness Normalization Toggle
+        Rectangle {
+            height: 36px;
+            border-radius: 6px;
+            background: root.normalization-enabled ? #1c3128 : #1e1e2a;
+            border-width: 1px;
+            border-color: root.normalization-enabled ? #22c55e88 : #2b2b3a;
+
+            HorizontalLayout {
+                padding-left: 12px;
+                padding-right: 12px;
+                alignment: space-between;
+                Text {
+                    text: "Loudness Normalization (dynaudnorm)";
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: 600;
+                    vertical-alignment: center;
+                }
+                Text {
+                    text: root.normalization-enabled ? "ON" : "OFF";
+                    color: root.normalization-enabled ? #4ade80 : #8c8c9c;
+                    font-size: 11px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                }
+            }
+            TouchArea {
+                clicked => {
+                    root.toggle-normalization(!root.normalization-enabled);
+                }
+            }
+        }
+
+        // SponsorBlock Toggle
+        Rectangle {
+            height: 34px;
+            border-radius: 6px;
+            background: root.sponsorblock-enabled ? #261b2e : #1e1e2a;
+            border-width: 1px;
+            border-color: root.sponsorblock-enabled ? #a855f788 : #2b2b3a;
+
+            HorizontalLayout {
+                padding-left: 12px;
+                padding-right: 12px;
+                alignment: space-between;
+                Text {
+                    text: "SponsorBlock (Skip music_offtopic)";
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: 600;
+                    vertical-alignment: center;
+                }
+                Text {
+                    text: root.sponsorblock-enabled ? "ON" : "OFF";
+                    color: root.sponsorblock-enabled ? #c084fc : #8c8c9c;
+                    font-size: 11px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                }
+            }
+            TouchArea {
+                clicked => {
+                    root.toggle-sponsorblock(!root.sponsorblock-enabled);
+                }
+            }
+        }
+    }
+}

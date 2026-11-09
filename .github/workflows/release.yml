@@ -1,0 +1,48 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Release Binary
+        run: cargo build --release
+
+      - name: Fetch Runtime Binaries (yt-dlp & ffmpeg)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/YTMusicNative-win64/bin | Out-Null
+          Copy-Item target/release/yt-music-native.exe dist/YTMusicNative-win64/
+          Copy-Item README.md dist/YTMusicNative-win64/
+          Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "dist/YTMusicNative-win64/bin/yt-dlp.exe"
+
+      - name: Package Portable ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "dist/YTMusicNative-win64/*" -DestinationPath "YTMusicNative-win64.zip" -Force
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/release/yt-music-native.exe
+            YTMusicNative-win64.zip
+          generate_release_notes: true

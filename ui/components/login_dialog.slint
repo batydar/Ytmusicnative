@@ -1,0 +1,195 @@
+export component LoginDialog inherits Rectangle {
+    in property <string> cookies-path: "";
+    in property <bool> is-logged-in: false;
+    in property <string> login-status-text: "";
+    in property <bool> login-busy: false;
+
+    callback close-dialog();
+    callback start-browser-login();
+    callback complete-browser-login();
+    callback logout-account();
+
+    width: 520px;
+    height: 410px;
+    border-radius: 14px;
+    background: #14141e;
+    border-width: 1px;
+    border-color: #2e2e44;
+
+    VerticalLayout {
+        padding: 24px;
+        spacing: 14px;
+
+        // Header
+        HorizontalLayout {
+            alignment: space-between;
+            HorizontalLayout {
+                spacing: 10px;
+                Path {
+                    width: 18px;
+                    height: 18px;
+                    y: 2px;
+                    fill: #ff0033;
+                    commands: "M 9 1 A 4 4 0 1 0 9 9 A 4 4 0 1 0 9 1 Z M 3 16 A 6 6 0 0 1 15 16 Z";
+                }
+                Text {
+                    text: "YouTube Music — Doğrudan Giriş & QR Bağlantısı";
+                    color: #ffffff;
+                    font-size: 15px;
+                    font-weight: 700;
+                }
+            }
+            Rectangle {
+                width: 28px;
+                height: 28px;
+                border-radius: 14px;
+                background: close-ta.has-hover ? #2e2e40 : transparent;
+                Text {
+                    text: "✕";
+                    color: #a0a0b2;
+                    font-size: 13px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                close-ta := TouchArea {
+                    clicked => {
+                        root.close-dialog();
+                    }
+                }
+            }
+        }
+
+        // Status Card
+        Rectangle {
+            height: 50px;
+            border-radius: 8px;
+            background: root.is-logged-in ? #12301e : #251520;
+            border-width: 1px;
+            border-color: root.is-logged-in ? #22c55e66 : #ff003366;
+            HorizontalLayout {
+                padding-left: 14px;
+                padding-right: 14px;
+                spacing: 10px;
+                alignment: center;
+                Text {
+                    text: root.login-status-text != "" ? root.login-status-text : (root.is-logged-in ? "✓ Google Hesabınız Bağlı — Kişisel Öneriler ve Çalma Listeleri Aktif" : "Henüz giriş yapılmadı — Kişisel öneriler ve çalma listeleriniz için giriş yapın");
+                    color: root.is-logged-in ? #4ade80 : #ff859a;
+                    font-size: 12px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                    overflow: elide;
+                }
+            }
+        }
+
+        // Step-by-Step Direct Login & QR Info
+        Rectangle {
+            border-radius: 10px;
+            background: #0f0f17;
+            border-width: 1px;
+            border-color: #232334;
+            VerticalLayout {
+                padding: 14px;
+                spacing: 8px;
+                Text {
+                    text: "Cookie Dosyasıyla Uğraşmadan Tek Tıkla Giriş:";
+                    color: #ffffff;
+                    font-size: 13px;
+                    font-weight: 700;
+                }
+                Text {
+                    text: "1. Aşağıdaki 'Google / QR Giriş Penceresini Aç' butonuna tıklayın.\n2. Açılan pencerede hesabınıza giriş yapın (İsterseniz 'Başka bir yöntem dene → Telefonunuzu kullanın' seçerek TV'deki gibi telefon kameranızla QR kod okutabilirsiniz).\n3. Giriş tamamlanıp YouTube Music açıldığında pencereyi kapatın veya 'Girişi Tamamla & Eşitle' butonuna basın.";
+                    color: #a6a6ba;
+                    font-size: 11px;
+                    wrap: word-wrap;
+                }
+            }
+        }
+
+        // Primary Button: Open Google / QR Login Window
+        Rectangle {
+            height: 44px;
+            border-radius: 10px;
+            background: open-login-ta.has-hover ? #ff1f4b : #ff0033;
+            HorizontalLayout {
+                alignment: center;
+                spacing: 10px;
+                Path {
+                    width: 15px;
+                    height: 15px;
+                    y: 14px;
+                    fill: #ffffff;
+                    commands: "M 1 1 L 6 1 L 6 6 L 1 6 Z M 9 1 L 14 1 L 14 6 L 9 6 Z M 1 9 L 6 9 L 6 14 L 1 14 Z M 9 9 L 11 9 L 11 11 L 9 11 Z M 12 9 L 14 9 L 14 14 L 9 14 L 9 12 L 12 12 Z";
+                }
+                Text {
+                    text: root.login-busy ? "Giriş Penceresi Açık — Giriş Yapmanız Bekleniyor..." : "1. Google / QR ile Giriş Penceresini Aç";
+                    color: #ffffff;
+                    font-size: 13px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                }
+            }
+            open-login-ta := TouchArea {
+                clicked => {
+                    root.start-browser-login();
+                }
+            }
+        }
+
+        Rectangle {
+            vertical-stretch: 1;
+        }
+
+        // Bottom Action Buttons
+        HorizontalLayout {
+            spacing: 10px;
+            alignment: space-between;
+
+            if root.is-logged-in : Rectangle {
+                width: 145px;
+                height: 38px;
+                border-radius: 8px;
+                background: logout-ta.has-hover ? #3b1c26 : #26161e;
+                border-width: 1px;
+                border-color: #ff003355;
+                Text {
+                    text: "Çıkış Yap / Değiştir";
+                    color: #ff8096;
+                    font-size: 11px;
+                    font-weight: 600;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                logout-ta := TouchArea {
+                    clicked => {
+                        root.logout-account();
+                    }
+                }
+            }
+
+            if !root.is-logged-in : Rectangle {
+                width: 10px;
+            }
+
+            Rectangle {
+                horizontal-stretch: 1;
+                height: 38px;
+                border-radius: 8px;
+                background: sync-ta.has-hover ? #22c55e : #16a34a;
+                Text {
+                    text: "2. Girişi Tamamla & Listelerimi Getir ✓";
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                sync-ta := TouchArea {
+                    clicked => {
+                        root.complete-browser-login();
+                    }
+                }
+            }
+        }
+    }
+}

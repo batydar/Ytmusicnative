@@ -1,0 +1,254 @@
+import { ScrollView } from "std-widgets.slint";
+import { UiTrack } from "home_view.slint";
+
+export component DownloadsView inherits Rectangle {
+    in property <string> download-folder: "";
+    in property <[UiTrack]> downloaded-tracks: [];
+    in property <string> current-video-id: "";
+    in property <string> active-download-title: "";
+    in property <float> active-download-progress: 0.0;
+    in property <string> active-download-status: "Idle";
+
+    callback change-download-folder();
+    callback refresh-downloads();
+    callback play-track(string);
+
+    background: #0d0d11;
+
+    VerticalLayout {
+        padding: 20px;
+        spacing: 14px;
+
+        // Header + Folder Selection Card
+        HorizontalLayout {
+            alignment: space-between;
+            VerticalLayout {
+                spacing: 2px;
+                Text {
+                    text: "Downloads & Cache-First Engine";
+                    color: #ffffff;
+                    font-size: 22px;
+                    font-weight: 700;
+                }
+                Text {
+                    text: "Tracks matching <Artist> - <Title> [<id>].opus play directly from disk with zero network buffering.";
+                    color: #8c8c9c;
+                    font-size: 12px;
+                }
+            }
+
+            Rectangle {
+                width: 115px;
+                height: 34px;
+                border-radius: 6px;
+                background: rescan-ta.has-hover ? #2c2c38 : #1e1e28;
+                border-width: 1px;
+                border-color: #323242;
+                Text {
+                    text: "↻ Rescan Disk";
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: 600;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                rescan-ta := TouchArea {
+                    clicked => {
+                        root.refresh-downloads();
+                    }
+                }
+            }
+        }
+
+        // Custom Download Directory Configuration Bar
+        Rectangle {
+            height: 68px;
+            border-radius: 10px;
+            background: #14141d;
+            border-width: 1px;
+            border-color: #262636;
+
+            HorizontalLayout {
+                padding: 14px;
+                spacing: 14px;
+
+                VerticalLayout {
+                    horizontal-stretch: 1;
+                    alignment: center;
+                    spacing: 4px;
+                    Text {
+                        text: "ACTIVE DOWNLOAD & LOCAL CACHE DIRECTORY";
+                        color: #7c7c8e;
+                        font-size: 10px;
+                        font-weight: 700;
+                    }
+                    Text {
+                        text: root.download-folder;
+                        color: #e4e4f0;
+                        font-size: 13px;
+                        font-weight: 600;
+                        overflow: elide;
+                    }
+                }
+
+                Rectangle {
+                    width: 185px;
+                    height: 38px;
+                    border-radius: 6px;
+                    background: folder-ta.has-hover ? #ff1a47 : #ff0033;
+                    Text {
+                        text: "Change Download Folder";
+                        color: #ffffff;
+                        font-size: 12px;
+                        font-weight: 700;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    folder-ta := TouchArea {
+                        clicked => {
+                            root.change-download-folder();
+                        }
+                    }
+                }
+            }
+        }
+
+        // Active Download Progress Card
+        if root.active-download-title != "" : Rectangle {
+            height: 68px;
+            border-radius: 10px;
+            background: #191520;
+            border-width: 1px;
+            border-color: #ff003366;
+
+            VerticalLayout {
+                padding: 12px;
+                spacing: 6px;
+
+                HorizontalLayout {
+                    alignment: space-between;
+                    Text {
+                        text: "yt-dlp Opus Downloader: " + root.active-download-title;
+                        color: #ffffff;
+                        font-size: 12px;
+                        font-weight: 600;
+                        overflow: elide;
+                    }
+                    Text {
+                        text: root.active-download-status;
+                        color: #ff4d70;
+                        font-size: 12px;
+                        font-weight: 700;
+                    }
+                }
+
+                Rectangle {
+                    height: 8px;
+                    border-radius: 4px;
+                    background: #2b2b38;
+                    Rectangle {
+                        x: 0px;
+                        width: parent.width * (Math.clamp(root.active-download-progress, 0.0, 100.0) / 100.0);
+                        height: parent.height;
+                        border-radius: 4px;
+                        background: #ff0033;
+                    }
+                }
+            }
+        }
+
+        // Cached Opus Tracks List
+        ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 6px;
+                alignment: start;
+
+                if root.downloaded-tracks.length == 0 : Rectangle {
+                    height: 150px;
+                    border-radius: 10px;
+                    background: #14141b;
+                    Text {
+                        text: "No cached .opus files in the selected download folder yet.";
+                        color: #8c8c9c;
+                        font-size: 13px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                for track in root.downloaded-tracks : Rectangle {
+                    height: 54px;
+                    border-radius: 8px;
+                    background: track.video-id == root.current-video-id ? #261720 : (play-ta.has-hover ? #181822 : #13131a);
+                    border-width: 1px;
+                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1f1f2a;
+
+                    play-ta := TouchArea {
+                        clicked => {
+                            root.play-track(track.video-id);
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 14px;
+                        padding-right: 14px;
+                        spacing: 12px;
+
+                        Rectangle {
+                            width: 32px;
+                            height: 32px;
+                            y: 10px;
+                            border-radius: 16px;
+                            background: track.video-id == root.current-video-id ? #ff0033 : (play-ta.has-hover ? #ff0033 : #252534);
+                            Text {
+                                text: "▶";
+                                color: #ffffff;
+                                font-size: 12px;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 2px;
+                            Text {
+                                text: track.title;
+                                color: #ffffff;
+                                font-size: 14px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: track.artist + " • [" + track.video-id + "]";
+                                color: #9696a6;
+                                font-size: 11px;
+                                overflow: elide;
+                            }
+                        }
+
+                        Rectangle {
+                            width: 105px;
+                            height: 24px;
+                            y: 14px;
+                            border-radius: 12px;
+                            background: #133223;
+                            border-width: 1px;
+                            border-color: #22c55e66;
+                            Text {
+                                text: "DISK OPUS READY";
+                                color: #4ade80;
+                                font-size: 10px;
+                                font-weight: 700;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

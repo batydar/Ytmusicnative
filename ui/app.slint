@@ -1,0 +1,265 @@
+import { Sidebar } from "components/sidebar.slint";
+import { HomeView, UiTrack } from "components/home_view.slint";
+import { SearchView } from "components/search_view.slint";
+import { PlaylistsView, UiPlaylist } from "components/playlists_view.slint";
+import { DownloadsView } from "components/downloads_view.slint";
+import { LyricsPanel, UiLyricLine } from "components/lyrics_panel.slint";
+import { EqPopover } from "components/eq_popover.slint";
+import { PlayerBar } from "components/player_bar.slint";
+import { LoginDialog } from "components/login_dialog.slint";
+
+export { UiTrack, UiLyricLine, UiPlaylist }
+
+export component MainWindow inherits Window {
+    title: "YouTube Music Native";
+    icon: @image-url("icon.png");
+    preferred-width: 1220px;
+    preferred-height: 760px;
+    min-width: 920px;
+    min-height: 600px;
+    background: #0b0b0f;
+
+    // Navigation & Panels (0: Home, 1: Search, 2: Downloads, 3: Playlists)
+    in-out property <int> active-tab: 0;
+    in-out property <bool> show-lyrics: true;
+    in-out property <bool> show-eq: false;
+    in-out property <bool> show-login: false;
+    in-out property <bool> is-logged-in: false;
+    in-out property <string> cookies-path: "";
+    in-out property <string> login-status-text: "";
+    in-out property <bool> login-busy: false;
+
+    // Data Models
+    in-out property <[UiTrack]> home-tracks: [];
+    in-out property <[UiTrack]> search-results: [];
+    in-out property <[UiTrack]> downloaded-tracks: [];
+    in-out property <[UiPlaylist]> playlists: [];
+    in-out property <string> active-playlist-browse-id: "";
+    in-out property <string> active-playlist-title: "";
+    in-out property <[UiTrack]> active-playlist-tracks: [];
+    in-out property <bool> playlist-loading: false;
+    in-out property <bool> playlist-tracks-loading: false;
+
+    in-out property <[UiTrack]> autoplaylist-tracks: [];
+    in-out property <string> autoplaylist-title: "";
+    in-out property <bool> autoplaylist-loading: false;
+
+    in-out property <[UiLyricLine]> lyric-lines: [];
+    in-out property <int> active-lyric-index: -1;
+    in-out property <string> lyrics-status: "Play a track to load time-synced LRCLIB lyrics.";
+
+    // Loading & Status
+    in-out property <bool> home-loading: false;
+    in-out property <string> home-status: "";
+    in-out property <bool> search-loading: false;
+    in-out property <string> search-query: "";
+
+    // Download & Config State
+    in-out property <string> download-folder: "";
+    in-out property <string> active-download-title: "";
+    in-out property <float> active-download-progress: 0.0;
+    in-out property <string> active-download-status: "Idle";
+
+    // Player & Audio Filter State
+    in-out property <string> current-video-id: "";
+    in-out property <string> current-title: "No Track Selected";
+    in-out property <string> current-artist: "Select any song from Home, Search, or Downloads";
+    in-out property <bool> is-playing: false;
+    in-out property <float> time-pos: 0.0;
+    in-out property <float> duration: 0.0;
+    in-out property <string> time-pos-text: "00:00";
+    in-out property <string> duration-text: "00:00";
+    in-out property <float> volume: 80.0;
+    in-out property <string> playback-source-badge: "IDLE";
+    in-out property <bool> can-download-current: false;
+
+    in-out property <string> active-eq-preset: "Flat";
+    in-out property <bool> normalization-enabled: false;
+    in-out property <bool> sponsorblock-enabled: true;
+    in-out property <string> filter-chain-preview: "";
+
+    // Callbacks wired to Rust backend
+    callback play-track(string);
+    callback play-in-playlist(string);
+    callback close-autoplaylist();
+    callback download-track(string);
+    callback refresh-home();
+    callback search-submitted(string);
+    callback change-download-folder();
+    callback refresh-downloads();
+    callback select-playlist(string, string);
+    callback refresh-playlists();
+    callback start-browser-login();
+    callback complete-browser-login();
+    callback logout-account();
+
+    callback play-pause-clicked();
+    callback next-clicked();
+    callback prev-clicked();
+    callback seek-to(float);
+    callback volume-changed(float);
+    callback select-eq-preset(string);
+    callback toggle-normalization(bool);
+    callback toggle-sponsorblock(bool);
+
+    VerticalLayout {
+        // Main Upper Content Area
+        HorizontalLayout {
+            vertical-stretch: 1;
+
+            Sidebar {
+                active-tab <=> root.active-tab;
+                show-lyrics <=> root.show-lyrics;
+                show-eq <=> root.show-eq;
+                active-eq-preset: root.active-eq-preset;
+                normalization-enabled: root.normalization-enabled;
+                playback-source-badge: root.playback-source-badge;
+                is-logged-in: root.is-logged-in;
+                toggle-lyrics => {
+                    root.show-lyrics = !root.show-lyrics;
+                }
+                toggle-eq => {
+                    root.show-eq = !root.show-eq;
+                }
+                open-login-dialog => {
+                    root.show-login = true;
+                }
+            }
+
+            // Center View Stack
+            Rectangle {
+                horizontal-stretch: 1;
+                background: #0b0b0f;
+
+                if root.active-tab == 0 : HomeView {
+                    width: parent.width;
+                    height: parent.height;
+                    tracks: root.home-tracks;
+                    autoplaylist-tracks: root.autoplaylist-tracks;
+                    autoplaylist-title: root.autoplaylist-title;
+                    autoplaylist-loading: root.autoplaylist-loading;
+                    is-loading: root.home-loading;
+                    is-logged-in: root.is-logged-in;
+                    current-video-id: root.current-video-id;
+                    status-message: root.home-status;
+                    play-track(id) => { root.play-track(id); }
+                    play-in-playlist(id) => { root.play-in-playlist(id); }
+                    close-autoplaylist => { root.close-autoplaylist(); }
+                    download-track(id) => { root.download-track(id); }
+                    refresh-home => { root.refresh-home(); }
+                    open-login => { root.show-login = true; }
+                }
+
+                if root.active-tab == 1 : SearchView {
+                    width: parent.width;
+                    height: parent.height;
+                    search-query <=> root.search-query;
+                    search-results: root.search-results;
+                    is-searching: root.search-loading;
+                    current-video-id: root.current-video-id;
+                    search-submitted(q) => { root.search-submitted(q); }
+                    play-track(id) => { root.play-track(id); }
+                    download-track(id) => { root.download-track(id); }
+                }
+
+                if root.active-tab == 2 : DownloadsView {
+                    width: parent.width;
+                    height: parent.height;
+                    download-folder: root.download-folder;
+                    downloaded-tracks: root.downloaded-tracks;
+                    current-video-id: root.current-video-id;
+                    active-download-title: root.active-download-title;
+                    active-download-progress: root.active-download-progress;
+                    active-download-status: root.active-download-status;
+                    change-download-folder => { root.change-download-folder(); }
+                    refresh-downloads => { root.refresh-downloads(); }
+                    play-track(id) => { root.play-in-playlist(id); }
+                }
+
+                if root.active-tab == 3 : PlaylistsView {
+                    width: parent.width;
+                    height: parent.height;
+                    playlists: root.playlists;
+                    is-loading: root.playlist-loading;
+                    is-logged-in: root.is-logged-in;
+                    active-browse-id: root.active-playlist-browse-id;
+                    active-playlist-title: root.active-playlist-title;
+                    active-playlist-tracks: root.active-playlist-tracks;
+                    is-loading-tracks: root.playlist-tracks-loading;
+                    current-video-id: root.current-video-id;
+                    select-playlist(id, name) => { root.select-playlist(id, name); }
+                    play-track(id) => { root.play-in-playlist(id); }
+                    download-track(id) => { root.download-track(id); }
+                    refresh-playlists => { root.refresh-playlists(); }
+                    open-login => { root.show-login = true; }
+                }
+
+                // Floating EQ & DSP Popover
+                if root.show-eq : EqPopover {
+                    x: parent.width - self.width - 20px;
+                    y: parent.height - self.height - 16px;
+                    active-preset: root.active-eq-preset;
+                    normalization-enabled: root.normalization-enabled;
+                    sponsorblock-enabled: root.sponsorblock-enabled;
+                    filter-chain-preview: root.filter-chain-preview;
+                    select-preset(p) => { root.select-eq-preset(p); }
+                    toggle-normalization(en) => { root.toggle-normalization(en); }
+                    toggle-sponsorblock(en) => { root.toggle-sponsorblock(en); }
+                    close-popover => { root.show-eq = false; }
+                }
+
+                // Login Dialog Overlay
+                if root.show-login : Rectangle {
+                    width: parent.width;
+                    height: parent.height;
+                    background: #000000aa;
+                    LoginDialog {
+                        x: (parent.width - self.width) / 2;
+                        y: (parent.height - self.height) / 2;
+                        cookies-path: root.cookies-path;
+                        is-logged-in: root.is-logged-in;
+                        login-status-text: root.login-status-text;
+                        login-busy: root.login-busy;
+                        close-dialog => { root.show-login = false; }
+                        start-browser-login => { root.start-browser-login(); }
+                        complete-browser-login => { root.complete-browser-login(); }
+                        logout-account => { root.logout-account(); }
+                    }
+                }
+            }
+
+            // Right Synchronized Lyrics Panel
+            if root.show-lyrics : LyricsPanel {
+                lines: root.lyric-lines;
+                status-text: root.lyrics-status;
+                active-index: root.active-lyric-index;
+            }
+        }
+
+        // Bottom Transport & Player Bar
+        PlayerBar {
+            current-title: root.current-title;
+            current-artist: root.current-artist;
+            is-playing: root.is-playing;
+            time-pos: root.time-pos;
+            duration: root.duration;
+            time-pos-text: root.time-pos-text;
+            duration-text: root.duration-text;
+            volume: root.volume;
+            playback-source-badge: root.playback-source-badge;
+            can-download-current: root.can-download-current;
+            play-pause-clicked => { root.play-pause-clicked(); }
+            next-clicked => { root.next-clicked(); }
+            prev-clicked => { root.prev-clicked(); }
+            seek-to(pos) => { root.seek-to(pos); }
+            volume-changed(vol) => { root.volume-changed(vol); }
+            download-current => {
+                if (root.current-video-id != "") {
+                    root.download-track(root.current-video-id);
+                }
+            }
+            toggle-eq => { root.show-eq = !root.show-eq; }
+            toggle-lyrics => { root.show-lyrics = !root.show-lyrics; }
+        }
+    }
+}

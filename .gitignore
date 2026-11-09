@@ -1,6 +1,9 @@
 /target
+/release
 /bin/*.exe
 /bin/*.dll
 /bin/*.7z
 /bin/*.zip
+*.log
+*.zip
 **/*.rs.bk

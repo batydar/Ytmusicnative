@@ -1,0 +1,186 @@
+import { ScrollView, LineEdit } from "std-widgets.slint";
+import { UiTrack } from "home_view.slint";
+
+export component SearchView inherits Rectangle {
+    in-out property <string> search-query: "";
+    in property <[UiTrack]> search-results: [];
+    in property <bool> is-searching: false;
+    in property <string> current-video-id: "";
+
+    callback search-submitted(string);
+    callback play-track(string);
+    callback download-track(string);
+
+    background: #0d0d11;
+
+    VerticalLayout {
+        padding: 20px;
+        spacing: 14px;
+
+        Text {
+            text: "Search YouTube Music";
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        // Search Input Row
+        HorizontalLayout {
+            spacing: 10px;
+            height: 40px;
+
+            query-input := LineEdit {
+                horizontal-stretch: 1;
+                placeholder-text: "Search songs, artists, albums...";
+                text <=> root.search-query;
+                accepted(val) => {
+                    root.search-submitted(val);
+                }
+            }
+
+            Rectangle {
+                width: 110px;
+                border-radius: 6px;
+                background: search-btn-ta.has-hover ? #ff1a47 : #ff0033;
+                Text {
+                    text: root.is-searching ? "Searching..." : "Search";
+                    color: #ffffff;
+                    font-size: 13px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                search-btn-ta := TouchArea {
+                    clicked => {
+                        root.search-submitted(root.search-query);
+                    }
+                }
+            }
+        }
+
+        // Results List
+        ScrollView {
+            vertical-stretch: 1;
+            VerticalLayout {
+                spacing: 6px;
+                alignment: start;
+
+                if root.search-results.length == 0 : Rectangle {
+                    height: 160px;
+                    border-radius: 10px;
+                    background: #14141b;
+                    Text {
+                        text: root.is-searching ? "Querying InnerTube search endpoint..." : "Enter a song or artist above to search YouTube Music.";
+                        color: #8c8c9c;
+                        font-size: 13px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                for track in root.search-results : Rectangle {
+                    height: 58px;
+                    border-radius: 8px;
+                    background: track.video-id == root.current-video-id ? #261720 : (play-ta.has-hover ? #181822 : #13131a);
+                    border-width: 1px;
+                    border-color: track.video-id == root.current-video-id ? #ff003388 : #1f1f2a;
+
+                    play-ta := TouchArea {
+                        clicked => {
+                            root.play-track(track.video-id);
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 14px;
+                        padding-right: 14px;
+                        spacing: 12px;
+
+                        Rectangle {
+                            width: 34px;
+                            height: 34px;
+                            y: 11px;
+                            border-radius: 17px;
+                            background: track.video-id == root.current-video-id ? #ff0033 : (play-ta.has-hover ? #ff0033 : #1e1e28);
+                            Text {
+                                text: "▶";
+                                color: #ffffff;
+                                font-size: 12px;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 2px;
+                            Text {
+                                text: track.title;
+                                color: #ffffff;
+                                font-size: 14px;
+                                font-weight: 600;
+                                overflow: elide;
+                            }
+                            Text {
+                                text: track.artist;
+                                color: #9696a6;
+                                font-size: 12px;
+                                overflow: elide;
+                            }
+                        }
+
+                        if track.is-cached : Rectangle {
+                            width: 92px;
+                            height: 24px;
+                            y: 17px;
+                            border-radius: 12px;
+                            background: #133223;
+                            border-width: 1px;
+                            border-color: #22c55e66;
+                            Text {
+                                text: "LOCAL OPUS";
+                                color: #4ade80;
+                                font-size: 10px;
+                                font-weight: 700;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        Text {
+                            width: 48px;
+                            text: track.duration;
+                            color: #8c8c9c;
+                            font-size: 12px;
+                            horizontal-alignment: right;
+                            vertical-alignment: center;
+                        }
+
+                        Rectangle {
+                            width: 96px;
+                            height: 30px;
+                            y: 14px;
+                            border-radius: 6px;
+                            background: track.is-cached ? #1e2822 : (dl-ta.has-hover ? #ff0033 : #252532);
+                            Text {
+                                text: track.is-cached ? "✓ Cached" : (track.is-downloading ? Math.round(track.download-progress) + "%" : "↓ Opus");
+                                color: #ffffff;
+                                font-size: 11px;
+                                font-weight: 600;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            dl-ta := TouchArea {
+                                enabled: !track.is-cached && !track.is-downloading;
+                                clicked => {
+                                    root.download-track(track.video-id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
